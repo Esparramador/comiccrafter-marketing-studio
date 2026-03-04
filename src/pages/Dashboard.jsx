@@ -21,13 +21,23 @@ const BG_IMAGES = [
 export default function Dashboard() {
   const [isAuthed, setIsAuthed] = React.useState(null);
 
+  const queryClient = useQueryClient();
+  const [userEmail, setUserEmail] = React.useState(null);
+
   React.useEffect(() => {
     base44.auth.me()
       .then((user) => {
-        setIsAuthed(!!user);
+        if (user) {
+          setIsAuthed(true);
+          setUserEmail(user.email);
+        } else {
+          setIsAuthed(false);
+          base44.auth.redirectToLogin();
+        }
       })
       .catch(() => {
         setIsAuthed(false);
+        base44.auth.redirectToLogin();
       });
   }, []);
 
@@ -43,12 +53,6 @@ export default function Dashboard() {
       }, 800);
     }, 6000);
     return () => clearInterval(interval);
-  }, []);
-  const queryClient = useQueryClient();
-
-  const [userEmail, setUserEmail] = React.useState(null);
-  React.useEffect(() => {
-    base44.auth.me().then((u) => setUserEmail(u?.email || null));
   }, []);
 
   const { data: posts = [], isLoading: postsLoading } = useQuery({
@@ -83,7 +87,7 @@ export default function Dashboard() {
   };
 
   if (isAuthed === null) return <div className="min-h-screen bg-[#0a0a0f]" />;
-  if (!isAuthed) return null;
+  if (!isAuthed) return <div className="min-h-screen bg-[#0a0a0f]" />;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
