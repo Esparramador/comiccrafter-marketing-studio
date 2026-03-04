@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { cn } from "@/lib/utils";
+import { I18nProvider, useI18n } from "@/components/i18n/I18nContext";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import {
   LayoutDashboard,
   FlaskConical,

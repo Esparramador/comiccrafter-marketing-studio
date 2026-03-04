@@ -48,22 +48,22 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import Dashboard from './pages/Dashboard';
+import Kanban from './pages/Kanban';
 import LabAI from './pages/LabAI';
 import SuperPrompt from './pages/SuperPrompt';
-import Viewer from './pages/Viewer';
-import Kanban from './pages/Kanban';
 import Vault from './pages/Vault';
+import Viewer from './pages/Viewer';
 import Admin from './pages/Admin';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Dashboard": Dashboard,
+    "Kanban": Kanban,
     "LabAI": LabAI,
     "SuperPrompt": SuperPrompt,
-    "Viewer": Viewer,
-    "Kanban": Kanban,
     "Vault": Vault,
+    "Viewer": Viewer,
     "Admin": Admin,
 }
 
