@@ -9,6 +9,7 @@ import IdeaInput from "@/components/dashboard/IdeaInput";
 import RecentAssets from "@/components/dashboard/RecentAssets";
 import RecentPosts from "@/components/dashboard/RecentPosts";
 import FreeStackBanner from "@/components/dashboard/FreeStackBanner";
+import SystemActivityLog from "@/components/dashboard/SystemActivityLog";
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
@@ -49,6 +50,7 @@ export default function Dashboard() {
         icon={LayoutDashboard}
       />
       <StatsOverview counts={counts} />
+      <SystemActivityLog posts={posts} />
       <FreeStackBanner />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">

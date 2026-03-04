@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { X, Save, Wand2, Loader2, Sparkles, RefreshCw, CheckCircle, Globe } from "lucide-react";
+import { X, Save, Wand2, Loader2, Sparkles, RefreshCw, CheckCircle, Globe, Zap } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ export default function StudioModal({ post, onClose, onUpdated }) {
   const [title, setTitle] = useState(post.title || "");
   const [copy, setCopy] = useState(post.instagram_copy || "");
   const [script, setScript] = useState(post.elevenlabs_script || "");
+  const [autoPost, setAutoPost] = useState(post.auto_post_enabled || false);
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
@@ -182,6 +184,24 @@ export default function StudioModal({ post, onClose, onUpdated }) {
               {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
               Guardar Cambios
             </Button>
+
+            {/* Auto-post toggle */}
+            <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-violet-500/5 border border-violet-500/20">
+              <div className="flex items-center gap-2">
+                <Zap className="w-3.5 h-3.5 text-violet-400" />
+                <div>
+                  <p className="text-xs font-medium text-violet-300">Auto-publicar</p>
+                  <p className="text-[10px] text-gray-600">Al aprobar, publica solo</p>
+                </div>
+              </div>
+              <Switch
+                checked={autoPost}
+                onCheckedChange={async (val) => {
+                  setAutoPost(val);
+                  await base44.entities.Post.update(post.id, { auto_post_enabled: val });
+                }}
+              />
+            </div>
 
             {/* Publish to Web */}
             <Button
