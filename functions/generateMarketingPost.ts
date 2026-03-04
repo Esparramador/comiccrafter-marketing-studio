@@ -145,15 +145,18 @@ Deno.serve(async (req) => {
 
     const { topic, template } = await req.json();
 
-    if (!topic || !template) {
+    if (!topic) {
       return Response.json(
-        { error: 'topic y template son requeridos' },
+        { error: 'topic es requerido' },
         { status: 400 }
       );
     }
 
+    // If no template provided, generate generic post
+    const templateKey = template || 'feature_spotlight';
+    
     // Generate post content
-    const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, template);
+    const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, templateKey);
 
     // Generate image with Replicate
     let imageUrl = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop';
