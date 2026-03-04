@@ -112,17 +112,50 @@ export default function MarketingStudio() {
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-300 block mb-3">
-                Selecciona Plantilla
-              </label>
-              <TemplateSelector selected={selectedTemplate} onSelect={setSelectedTemplate} />
-            </div>
+               <label className="text-sm font-medium text-gray-300 block mb-3">
+                 Selecciona Plantilla
+               </label>
+               <TemplateSelector selected={selectedTemplate} onSelect={setSelectedTemplate} />
+             </div>
 
-            <Button
-              onClick={handleGenerate}
-              disabled={generating || !topic.trim()}
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white"
-            >
+             <div>
+               <label className="text-sm font-medium text-gray-300 block mb-2">
+                 Imagen de Referencia (Opcional)
+               </label>
+               {referenceImage ? (
+                 <div className="relative rounded-lg overflow-hidden border border-[var(--border-dim)] bg-[var(--surface)]">
+                   <img src={referenceImage} alt="Reference" className="w-full h-32 object-cover" />
+                   <button
+                     onClick={() => setReferenceImage(null)}
+                     className="absolute top-2 right-2 bg-black/60 hover:bg-black/80 p-1 rounded-lg transition-all"
+                   >
+                     <X className="w-4 h-4 text-white" />
+                   </button>
+                 </div>
+               ) : (
+                 <label className="flex items-center justify-center p-4 border-2 border-dashed border-[var(--border-dim)] rounded-lg hover:border-violet-500/50 transition-colors cursor-pointer">
+                   <input
+                     type="file"
+                     accept="image/*"
+                     onChange={handleReferenceUpload}
+                     disabled={uploadingRef}
+                     className="hidden"
+                   />
+                   <div className="text-center">
+                     <Upload className="w-5 h-5 mx-auto mb-1 text-gray-500" />
+                     <span className="text-xs text-gray-400">
+                       {uploadingRef ? "Cargando..." : "Sube una imagen"}
+                     </span>
+                   </div>
+                 </label>
+               )}
+             </div>
+
+             <Button
+               onClick={handleGenerate}
+               disabled={generating || !topic.trim()}
+               className="w-full bg-violet-600 hover:bg-violet-700 text-white"
+             >
               {generating ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
