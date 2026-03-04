@@ -79,6 +79,7 @@ export default function SuperPrompt() {
   const [outputs, setOutputs] = useState({ instagram_copy: "", luma_prompt: "", elevenlabs_script: "" });
   const [mode, setMode] = useState("megaprompt"); // megaprompt or sequential
   const [selectedLLMs, setSelectedLLMs] = useState(["gemini"]); // array of selected LLMs
+  const [comboMode, setComboMode] = useState(false); // Gemini + ChatGPT complementary
   const { t } = useI18n();
 
   const queryClient = useQueryClient();
