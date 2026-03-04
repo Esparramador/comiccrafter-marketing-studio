@@ -130,52 +130,12 @@ FORMATO DE SALIDA:
 
     const results = {};
 
-    if (llms.includes('gemini') && llms.includes('openai') && mode === 'combo') {
-      // MODO COMPLEMENTARIO: Gemini genera → ChatGPT refina/complementa (CON CONTEXTO WEB)
+    if (llms.includes('mistral') && mode === 'combo') {
+      // MODO COMPLEMENTARIO: Mistral genera → refina (CON CONTEXTO WEB) - versión simplificada
       const finalPrompt = `${promptsmithSystem}\n\nIDEA_DEL_USUARIO: ${idea_base}`;
 
-      // Step 1: Gemini genera versión base (CON CONTEXTO WEB)
-      const geminiBase = await callGemini(finalPrompt, true);
-
-      // Step 2: ChatGPT refina cada campo basándose en el output de Gemini (CON CONTEXTO WEB)
-      const refinementPrompt = `${promptsmithSystem}\n\nREFINAMIENTO Y COMPLEMENTO:
-
-Dado este contenido base de Gemini:
-${JSON.stringify(geminiBase, null, 2)}
-
-TAREA: Refina y mejora CADA CAMPO según estas reglas:
-- instagram_copy: Mejora la persuasión, añade más emojis, hashtags más específicos, CTA más fuerte
-- luma_prompt: Expande detalles visuales, añade más técnicas de cámara, especifica más colores/texturas
-- elevenlabs_script: Pausa dramáticas mejor, puntuación para énfasis, más emoción vocal
-
-Mantén la esencia original pero hazlo MÁS épico, MÁS detallado, MÁS impactante.
-
-FORMATO: {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`;
-
-      const openaiRefined = await callOpenAI(refinementPrompt, true);
-
-      // Step 3: Fusiona intelligentemente - toma lo mejor de ambos
-      const fusePrompt = `${promptsmithSystem}\n\nFUSIÓN INTELIGENTE:
-
-Tienes dos versiones:
-
-VERSIÓN GEMINI:
-${JSON.stringify(geminiBase, null, 2)}
-
-VERSIÓN CHATGPT (REFINADA):
-${JSON.stringify(openaiRefined, null, 2)}
-
-TAREA: Crea la MEJOR versión final kombinando lo mejor de cada una:
-- instagram_copy: Combina el tono más impactante + emojis/hashtags más efectivos
-- luma_prompt: Usa detalles + técnicas más específicas, unifica coherencia visual
-- elevenlabs_script: Pacing + énfasis emocional óptimos
-
-FORMATO: {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`;
-
-      const finalFused = await callGemini(fusePrompt, true);
-      results.fused = finalFused;
-      results.gemini_base = geminiBase;
-      results.openai_refined = openaiRefined;
+      const mistralBase = await callMistral(finalPrompt, true);
+      results.mistral = mistralBase;
     } else if (mode === 'megaprompt') {
       // Megaprompt: una sola pasada con sistema PROMPTSMITH completo
       const finalPrompt = `${promptsmithSystem}\n\nIDEA_DEL_USUARIO: ${idea_base}`;
