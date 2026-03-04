@@ -11,7 +11,27 @@ import RecentPosts from "@/components/dashboard/RecentPosts";
 import FreeStackBanner from "@/components/dashboard/FreeStackBanner";
 import SystemActivityLog from "@/components/dashboard/SystemActivityLog";
 
+const BG_IMAGES = [
+  "https://images.unsplash.com/photo-1618519764620-7403abdbdfe9?w=1600&q=80", // comic pop art
+  "https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=1600&q=80", // vibrant colors art
+  "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=1600&q=80", // colorful abstract
+  "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80", // neon art
+];
+
 export default function Dashboard() {
+  const [bgIndex, setBgIndex] = React.useState(0);
+  const [fadeIn, setFadeIn] = React.useState(true);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setFadeIn(false);
+      setTimeout(() => {
+        setBgIndex((i) => (i + 1) % BG_IMAGES.length);
+        setFadeIn(true);
+      }, 800);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
   const queryClient = useQueryClient();
 
   const { data: posts = [], isLoading: postsLoading } = useQuery({
