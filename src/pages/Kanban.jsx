@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Calendar } from "lucide-react";
+import { Calendar, Columns } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader";
 import KanbanColumn from "@/components/kanban/KanbanColumn";
+import MonthlyGrid from "@/components/calendar/MonthlyGrid";
 import { toast } from "sonner";
 
 const STATUSES = ["idea", "en_produccion", "en_revision", "programado", "publicado"];
