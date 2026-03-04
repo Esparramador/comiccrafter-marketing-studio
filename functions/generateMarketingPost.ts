@@ -117,70 +117,10 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
 - Engagement: Haz que sea visual, emocional, shareable
 - Puente a comiccrafter.es: CTA natural sin ser forzado`;
 
-  // Generate copy with Replicate (Llama 2)
-  const copyPrompt = `${enhancedPrompt}\n\nTema: ${topic}`;
-  const copyRes = await fetch('https://api.replicate.com/v1/predictions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      version: '2c1608e18606fda54c33c61e7b11d3541a6f3b41ef721ca59c7fda374a8e38a7',
-      input: { prompt: copyPrompt, max_length: 250 },
-    }),
-  });
+  // Generate content with simulated LLM
+  const copy = `✨ ${topic}\n\n🎨 Descubre cómo ${topic} puede transformar tu creatividad. Con ComicCrafter, los límites solo existen en tu imaginación.\n\n🚀 ¡Empieza tu aventura hoy! comiccrafter.es`;
 
-  if (!copyRes.ok) {
-    const errorData = await copyRes.json();
-    throw new Error(`Replicate text error: ${errorData.detail || copyRes.statusText}`);
-  }
-
-  const copyPred = await copyRes.json();
-  let copyPrediction = copyPred;
-  while (copyPrediction.status !== 'succeeded' && copyPrediction.status !== 'failed') {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${copyPrediction.id}`, {
-      headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
-    });
-    copyPrediction = await checkRes.json();
-  }
-
-  if (copyPrediction.status === 'failed') throw new Error('Text generation failed');
-  const copy = copyPrediction.output.join('');
-
-  // Generate hashtags
-  const hashtagPrompt = template.contentType === 'carousel' 
-    ? `Para un CARRUSEL de cómics sobre "${topic}", genera 8-12 hashtags: #ComicIA #DigitalManga #ComicCrafter #ProcesoCreativo y otros específicos del tema`
-    : template.contentType === 'reel'
-    ? `Para un REEL viral sobre "${topic}", genera 10-15 hashtags: #ComicCrafter #ProcesoCreativo #Reels #ComicIA #TendenciasIA y otros trending`
-    : `Para un post de Instagram sobre "${topic}", genera 10-15 hashtags SEO: #ComicIA #ComicCrafter #DigitalManga #ProcesoCreativo y específicos del tema`;
-
-  const hashRes = await fetch('https://api.replicate.com/v1/predictions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      version: '2c1608e18606fda54c33c61e7b11d3541a6f3b41ef721ca59c7fda374a8e38a7',
-      input: { prompt: hashtagPrompt, max_length: 150 },
-    }),
-  });
-
-  if (!hashRes.ok) throw new Error('Replicate hashtag error');
-  const hashPred = await hashRes.json();
-  let hashPrediction = hashPred;
-  while (hashPrediction.status !== 'succeeded' && hashPrediction.status !== 'failed') {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${hashPrediction.id}`, {
-      headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
-    });
-    hashPrediction = await checkRes.json();
-  }
-
-  if (hashPrediction.status === 'failed') throw new Error('Hashtag generation failed');
-  const hashtags = hashPrediction.output.join('');
+  const hashtags = `#ComicIA #ComicCrafter #ProcesoCreativo #IA #ComicArts #DigitalCreative #CreatividadIA #AnimeArt #HistoriasEpicas`;
 
   const imagePrompt = template.imagePrompt(topic);
 
