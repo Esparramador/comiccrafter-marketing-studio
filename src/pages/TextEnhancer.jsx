@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Sparkles, Send, Copy, Download } from "lucide-react";
+import { Sparkles, Send, Copy, Download, FileDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SectionHeader from "@/components/shared/SectionHeader";
+import { jsPDF } from "jspdf";
 
 export default function TextEnhancer() {
   const [inputText, setInputText] = useState("");
