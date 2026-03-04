@@ -1,12 +1,14 @@
 import React from "react";
+import { base44 } from "@/api/base44Client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Download, Check } from "lucide-react";
+import { Copy, Download, Check, Instagram, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function PostPreview({ post, onApprove, approving }) {
   const [copied, setCopied] = React.useState(false);
+  const [publishing, setPublishing] = React.useState(false);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -79,7 +81,7 @@ export default function PostPreview({ post, onApprove, approving }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-col sm:flex-row">
           <Button
             onClick={() => {
               const element = document.createElement("a");
@@ -102,13 +104,50 @@ export default function PostPreview({ post, onApprove, approving }) {
             className="flex-1 bg-violet-600 hover:bg-violet-700 text-white"
           >
             {approving ? (
-              <span className="animate-spin">⏳</span>
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
             ) : (
               <Check className="w-4 h-4 mr-2" />
             )}
             Aprobar
           </Button>
         </div>
+
+        {/* Publish to Instagram Button */}
+        {post.id && (
+          <Button
+            onClick={async () => {
+              setPublishing(true);
+              try {
+                const res = await base44.functions.invoke("publishToInstagram", {
+                  postId: post.id,
+                  imageUrl: post.imageUrl,
+                  copy: post.copy,
+                  hashtags: post.hashtags,
+                });
+                toast.success("Publicado en Instagram!");
+                onApprove();
+              } catch (error) {
+                toast.error(`Error: ${error.message}`);
+              } finally {
+                setPublishing(false);
+              }
+            }}
+            disabled={publishing}
+            className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 hover:opacity-90 text-white"
+          >
+            {publishing ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Publicando...
+              </>
+            ) : (
+              <>
+                <Instagram className="w-4 h-4 mr-2" />
+                Publicar en Instagram
+              </>
+            )}
+          </Button>
+        )}
       </div>
     </div>
   );
