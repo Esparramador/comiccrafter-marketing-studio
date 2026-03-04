@@ -182,6 +182,17 @@ export default function StudioModal({ post, onClose, onUpdated }) {
               {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
               Guardar Cambios
             </Button>
+
+            {/* Publish to Web */}
+            <Button
+              onClick={handlePublishToWeb}
+              disabled={publishing || post.status === "publicado"}
+              variant="outline"
+              className="w-full border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 text-sm"
+            >
+              {publishing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Globe className="w-4 h-4 mr-2" />}
+              {post.status === "publicado" ? "✓ Publicado en comiccrafter.es" : "Publicar en Web"}
+            </Button>
           </div>
         </div>
       </div>
