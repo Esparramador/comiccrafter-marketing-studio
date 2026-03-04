@@ -93,6 +93,7 @@ function LayoutInner({ children, currentPageName }) {
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto scrollbar-thin">
           {NAV_KEYS.map((item) => {
+            if (item.page === "Admin" && userEmail !== ADMIN_EMAIL) return null;
             const isActive = currentPageName === item.page;
             return (
               <Link
