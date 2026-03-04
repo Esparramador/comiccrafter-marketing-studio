@@ -108,7 +108,6 @@ async function generatePost(topic, templateKey) {
   const template = TEMPLATES[templateKey];
   if (!template) throw new Error(`Template ${templateKey} no existe`);
 
-  // Sistema mejorado con contexto web
   const enhancedPrompt = `${template.systemPrompt}
 
 CONTEXTO ESTRATÉGICO INSTAGRAM:
@@ -118,75 +117,71 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
 - Engagement: Haz que sea visual, emocional, shareable
 - Puente a comiccrafter.es: CTA natural sin ser forzado`;
 
-  // Generate copy with Gemini (free)
-  const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-  const copyResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+  // Generate copy with Replicate (Meta Llama 3)
+  const copyPrompt = `${enhancedPrompt}\n\nTema: ${topic}`;
+  const copyRes = await fetch('https://api.replicate.com/v1/predictions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            {
-              text: `${enhancedPrompt}\n\nTema: ${topic}`,
-            },
-          ],
-        },
-      ],
-      generationConfig: { temperature: 0.8, maxOutputTokens: 250 },
-      safetySettings: [
-        { category: 'HARM_CATEGORY_UNSPECIFIED', threshold: 'BLOCK_NONE' },
-      ],
+      version: 'e5582c231626ffc155a3a7d81ba8476003f2e694b40f51204d5a387c1835a016',
+      input: { prompt: copyPrompt, max_tokens: 250 },
     }),
   });
 
-  if (!copyResponse.ok) {
-    const errorData = await copyResponse.json();
-    console.error('Gemini Error:', errorData);
-    throw new Error(`Gemini API error: ${errorData.error?.message || copyResponse.statusText}`);
+  if (!copyRes.ok) {
+    const errorData = await copyRes.json();
+    throw new Error(`Replicate text error: ${errorData.detail || copyRes.statusText}`);
   }
-  const copyData = await copyResponse.json();
-  const copy = copyData.contents[0].parts[0].text;
 
-  // Generate SEO-optimized hashtags with Gemini
+  const copyPred = await copyRes.json();
+  let copyPrediction = copyPred;
+  while (copyPrediction.status !== 'succeeded' && copyPrediction.status !== 'failed') {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${copyPrediction.id}`, {
+      headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
+    });
+    copyPrediction = await checkRes.json();
+  }
+
+  if (copyPrediction.status === 'failed') throw new Error('Text generation failed');
+  const copy = copyPrediction.output.join('');
+
+  // Generate hashtags
   const hashtagPrompt = template.contentType === 'carousel' 
-    ? `Para un CARRUSEL de cómics sobre "${topic}", genera 8-12 hashtags SEO-optimized: 
-       - 3 hashtags de cómics/manga: #ComicIA #DigitalManga #AkiraToriyamaStyle
-       - 3 de IA creativa: #ComicCrafter #ProcesoCreativo #AIArt
-       - 2-3 específicos del tema: ${topic}`
+    ? `Para un CARRUSEL de cómics sobre "${topic}", genera 8-12 hashtags: #ComicIA #DigitalManga #ComicCrafter #ProcesoCreativo y otros específicos del tema`
     : template.contentType === 'reel'
-    ? `Para un REEL viral sobre "${topic}", genera 10-15 hashtags trending:
-       - 3 principales: #ComicCrafter #ProcesoCreativo #BTS
-       - Resto: hashtags virales del tema + #Reels #ComicIA #TendenciasIA`
-    : `Para un post de Instagram sobre "${topic}" con estrategia de storytelling visual, genera 10-15 hashtags relevantes y SEO-optimized. 
-       Incluye: #ComicIA #ComicCrafter #DigitalManga #ProcesoCreativo + otros específicos del tema "${topic}"`;
+    ? `Para un REEL viral sobre "${topic}", genera 10-15 hashtags: #ComicCrafter #ProcesoCreativo #Reels #ComicIA #TendenciasIA y otros trending`
+    : `Para un post de Instagram sobre "${topic}", genera 10-15 hashtags SEO: #ComicIA #ComicCrafter #DigitalManga #ProcesoCreativo y específicos del tema`;
 
-  const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
-  const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
+  const hashRes = await fetch('https://api.replicate.com/v1/predictions', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            {
-              text: hashtagPrompt,
-            },
-          ],
-        },
-      ],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 150 },
-      safetySettings: [
-        { category: 'HARM_CATEGORY_UNSPECIFIED', threshold: 'BLOCK_NONE' },
-      ],
+      version: 'e5582c231626ffc155a3a7d81ba8476003f2e694b40f51204d5a387c1835a016',
+      input: { prompt: hashtagPrompt, max_tokens: 150 },
     }),
   });
 
-  if (!geminiResponse.ok) throw new Error('Gemini API error');
-  const geminiData = await geminiResponse.json();
-  const hashtags = geminiData.contents[0].parts[0].text;
+  if (!hashRes.ok) throw new Error('Replicate hashtag error');
+  const hashPred = await hashRes.json();
+  let hashPrediction = hashPred;
+  while (hashPrediction.status !== 'succeeded' && hashPrediction.status !== 'failed') {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${hashPrediction.id}`, {
+      headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
+    });
+    hashPrediction = await checkRes.json();
+  }
 
-  // Generate image prompt
+  if (hashPrediction.status === 'failed') throw new Error('Hashtag generation failed');
+  const hashtags = hashPrediction.output.join('');
+
   const imagePrompt = template.imagePrompt(topic);
 
   return {
