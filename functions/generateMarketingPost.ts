@@ -158,8 +158,8 @@ Deno.serve(async (req) => {
     // Generate post content
     const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, templateKey);
 
-    // Generate image with Replicate
-    let imageUrl = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop';
+    // Generate image with Replicate Flux (real image generation)
+    let imageUrl = null;
     
     try {
       const replicateRes = await fetch('https://api.replicate.com/v1/predictions', {
@@ -169,10 +169,12 @@ Deno.serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          version: 'e731f5e6e6417d9a1c014beb38330d5be26c3b46e51ee55590b351923dae90dc',
+          version: 'f7f3815589de4afbaee0bac23c0eee30e94f86e16a7476aa65vysrx3ad0yw',
           input: {
             prompt: imagePrompt,
+            num_outputs: 1,
             aspect_ratio: '1:1',
+            num_inference_steps: 50,
           },
         }),
       });
@@ -181,20 +183,27 @@ Deno.serve(async (req) => {
         const replicateData = await replicateRes.json();
         
         let prediction = replicateData;
-        while (prediction.status !== 'succeeded' && prediction.status !== 'failed') {
+        let attempts = 0;
+        while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && attempts < 120) {
           await new Promise(resolve => setTimeout(resolve, 1000));
           const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
             headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
           });
           prediction = await checkRes.json();
+          attempts++;
         }
 
-        if (prediction.status === 'succeeded') {
-          imageUrl = prediction.output?.[0] || prediction.output;
+        if (prediction.status === 'succeeded' && prediction.output) {
+          imageUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
         }
       }
     } catch (imgError) {
-      console.error('Image generation failed, using placeholder:', imgError.message);
+      console.error('Image generation error:', imgError.message);
+    }
+    
+    // Si falla, usar placeholder
+    if (!imageUrl) {
+      imageUrl = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop';
     }
 
     // Save to database
