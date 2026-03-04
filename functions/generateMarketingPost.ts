@@ -118,31 +118,35 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
 - Engagement: Haz que sea visual, emocional, shareable
 - Puente a comiccrafter.es: CTA natural sin ser forzado`;
 
-  // Generate copy with OpenAI
-  const copyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+  // Generate copy with Gemini (free)
+  const copyResponse = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: enhancedPrompt },
-        { role: 'user', content: `Tema: ${topic}` },
+      contents: [
+        {
+          parts: [
+            {
+              text: `${enhancedPrompt}\n\nTema: ${topic}`,
+            },
+          ],
+        },
       ],
-      temperature: 0.8,
-      max_tokens: 250,
+      generationConfig: { temperature: 0.8, maxOutputTokens: 250 },
+      safetySettings: [
+        { category: 'HARM_CATEGORY_UNSPECIFIED', threshold: 'BLOCK_NONE' },
+      ],
+      apiKey: Deno.env.get('GEMINI_API_KEY'),
     }),
   });
 
   if (!copyResponse.ok) {
     const errorData = await copyResponse.json();
-    console.error('OpenAI Error:', errorData);
-    throw new Error(`OpenAI API error: ${errorData.error?.message || copyResponse.statusText}`);
+    console.error('Gemini Error:', errorData);
+    throw new Error(`Gemini API error: ${errorData.error?.message || copyResponse.statusText}`);
   }
   const copyData = await copyResponse.json();
-  const copy = copyData.choices[0].message.content;
+  const copy = copyData.contents[0].parts[0].text;
 
   // Generate SEO-optimized hashtags with Gemini
   const hashtagPrompt = template.contentType === 'carousel' 
