@@ -10,6 +10,8 @@ Incluye:
 - Call-to-action directo
 - Máximo 300 caracteres`,
     imagePrompt: (topic) => `Modern comic art illustration style, vibrant colors, showing ${topic} feature of ComicCrafter app, professional comic aesthetic, trending on Instagram, cinematic lighting, high detail`,
+    contentType: 'static_post',
+    description: 'Post estático sobre funcionalidades'
   },
   community_showcase: {
     systemPrompt: `Eres Community Manager de ComicCrafter.
@@ -20,6 +22,8 @@ Incluye:
 - Hashtag #ComicCrafterCommunity
 - Máximo 280 caracteres`,
     imagePrompt: (topic) => `Collage of comic art, diverse art styles, community showcase, vibrant, creative energy, ${topic}, trending aesthetic, professional quality`,
+    contentType: 'static_post',
+    description: 'Celebra la creatividad comunitaria'
   },
   tech_bts: {
     systemPrompt: `Eres Technical Writer en ComicCrafter.
@@ -30,6 +34,64 @@ Incluye:
 - Tone: friendly pero tech-savvy
 - Máximo 300 caracteres`,
     imagePrompt: (topic) => `Technical infographic illustration, AI, machine learning, ${topic}, code visualization, modern tech aesthetic, clean design, professional`,
+    contentType: 'static_post',
+    description: 'Detrás de escenas técnico'
+  },
+  carousel_comic: {
+    systemPrompt: `Eres Community Manager experto en cómics visuales para Instagram.
+Crea un post para CARRUSEL de cómics (formato ideal para viñetas).
+Incluye:
+- Primera viñeta: momento IMPACTANTE que atrape
+- Descripción: cómo conectan visualmente las viñetas
+- Final: CTA fuerte ("Lee en comiccrafter.es")
+- Máximo 280 caracteres
+- SEO: incluye palabras clave naturales`,
+    imagePrompt: (topic) => `Comic book page layout, manga style, action-packed scene, ${topic}, dramatic composition, cinematic lighting, professional comic aesthetic, high contrast colors`,
+    contentType: 'carousel',
+    maxImages: 10,
+    description: 'Carrusel de viñetas con storytelling visual'
+  },
+  reel_creative_process: {
+    systemPrompt: `Eres director de contenido para Reels de Instagram.
+Crea un script para REEL de 15-20 segundos mostrando proceso creativo.
+Incluye:
+- Hook inicial provocador ("¿Cómo logré 100 páginas coherentes con IA?")
+- Secuencia: personajes → prompt → resultado
+- Música épica/cinemática recomendada
+- Transiciones dinámicas
+- CTA: "Descubre cómo en comiccrafter.es"`,
+    imagePrompt: (topic) => `Screen recording aesthetic, creative process visualization, ${topic}, dynamic transitions, colorful UI, modern motion graphics, trending reel style`,
+    contentType: 'reel',
+    duration: '15-20s',
+    description: 'Reel viral mostrando proceso creativo'
+  },
+  story_interactive: {
+    systemPrompt: `Eres especialista en Instagram Stories interactivas.
+Crea un post para STORY con elemento interactivo.
+Incluye:
+- Opción 1: Pregunta sobre desarrollo de la historia
+- Opción 2: Votación de personajes/decisiones
+- Opción 3: Encuesta "¿Qué harías?"
+- Texto visual atractivo
+- Emojis para engagement
+EJEMPLO: "¿Qué debería hacer Lía ahora? Explorar el callejón o seguir a su papá?"`,
+    imagePrompt: (topic) => `Instagram story design, interactive layout, ${topic}, vibrant colors, call-to-action visual, sticker-friendly design, modern aesthetic`,
+    contentType: 'story',
+    description: 'Story interactiva para engagement'
+  },
+  arc_summary: {
+    systemPrompt: `Eres Community Manager especializado en narrative recaps.
+Crea un post RESUMEN DE ARCO narrativo.
+Incluye:
+- Lo que pasó en los últimos días/semana
+- Momentos clave destacados
+- Emojis narrativos
+- Setup para el siguiente arco
+- CTA: "¿Qué crees que pasará?"
+- Máximo 300 caracteres`,
+    imagePrompt: (topic) => `Comic book summary artwork, collage of key scenes, ${topic}, narrative flow visualization, dramatic composition, storytelling art style`,
+    contentType: 'static_post',
+    description: 'Resumen visual del arco argumental'
   },
 };
 
