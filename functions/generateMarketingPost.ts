@@ -117,7 +117,7 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
 - Engagement: Haz que sea visual, emocional, shareable
 - Puente a comiccrafter.es: CTA natural sin ser forzado`;
 
-  // Generate copy with Replicate (Meta Llama 3)
+  // Generate copy with Replicate (Llama 2)
   const copyPrompt = `${enhancedPrompt}\n\nTema: ${topic}`;
   const copyRes = await fetch('https://api.replicate.com/v1/predictions', {
     method: 'POST',
@@ -126,8 +126,8 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      version: 'e5582c231626ffc155a3a7d81ba8476003f2e694b40f51204d5a387c1835a016',
-      input: { prompt: copyPrompt, max_tokens: 250 },
+      version: '2c1608e18606fda54c33c61e7b11d3541a6f3b41ef721ca59c7fda374a8e38a7',
+      input: { prompt: copyPrompt, max_length: 250 },
     }),
   });
 
@@ -163,8 +163,8 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      version: 'e5582c231626ffc155a3a7d81ba8476003f2e694b40f51204d5a387c1835a016',
-      input: { prompt: hashtagPrompt, max_tokens: 150 },
+      version: '2c1608e18606fda54c33c61e7b11d3541a6f3b41ef721ca59c7fda374a8e38a7',
+      input: { prompt: hashtagPrompt, max_length: 150 },
     }),
   });
 
