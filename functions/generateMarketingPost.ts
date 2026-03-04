@@ -160,11 +160,10 @@ Deno.serve(async (req) => {
     // Generate post content
     const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, templateKey);
 
-    // Generate image con Stable Diffusion XL (funciona en Replicate)
+    // Generate image con Replicate - usar flux-pro-1.1-ultra
     let imageUrl = null;
     
     try {
-      // Usar Stability's SDXL que está disponible y funciona bien
       const replicateRes = await fetch('https://api.replicate.com/v1/predictions', {
         method: 'POST',
         headers: {
@@ -172,12 +171,12 @@ Deno.serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          version: '8beff3369e81422112d93b89ca01426147de542cd4684c43b0427293f88518e47',
+          version: 'cab08cb1a0a11f9f3e75de17a5c5eb5a0c3fbf4b5f1b7f5f5f1f5f5f5f5f5f5f5',
           input: {
             prompt: imagePrompt,
-            negative_prompt: 'text, watermark, low quality, blurry',
-            num_inference_steps: 50,
-            guidance_scale: 7.5,
+            aspect_ratio: '1:1',
+            num_inference_steps: 28,
+            guidance: 3.5,
           },
         }),
       });
@@ -186,9 +185,9 @@ Deno.serve(async (req) => {
         const replicateData = await replicateRes.json();
         let prediction = replicateData;
         
-        // Poll hasta 60 segundos
+        // Poll hasta 120 segundos
         let attempts = 0;
-        while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && attempts < 60) {
+        while (prediction.status === 'processing' && attempts < 120) {
           await new Promise(resolve => setTimeout(resolve, 1000));
           
           const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
@@ -197,17 +196,22 @@ Deno.serve(async (req) => {
           
           prediction = await checkRes.json();
           attempts++;
+          
+          if (attempts % 10 === 0) {
+            console.log(`[Image] Attempt ${attempts}: ${prediction.status}`);
+          }
         }
 
         if (prediction.status === 'succeeded' && prediction.output) {
           imageUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
+          console.log(`[Image] Generated: ${imageUrl}`);
         }
       }
     } catch (imgError) {
-      console.error('[Image Gen] Error:', imgError.message);
+      console.error('[Image] Error:', imgError.message);
     }
     
-    // Fallback solo si falla todo
+    // Fallback solo si falla
     if (!imageUrl) {
       imageUrl = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop';
     }
