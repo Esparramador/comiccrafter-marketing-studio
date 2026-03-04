@@ -160,68 +160,22 @@ Deno.serve(async (req) => {
     // Generate post content
     const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, templateKey);
 
-    // Generate image usando Replicate Flux
+    // Generar imagen con Base44 GenerateImage (más confiable)
     let imageUrl = null;
     
     try {
-      // Usar Flux (modelo de imagen rápido en Replicate)
-      const imageRes = await fetch('https://api.replicate.com/v1/predictions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          version: 'f278ce7f520567f4dddecc522b4dcd4628f07f8abda9be96c5e7b5b6cfe2e1f8',
-          input: {
-            prompt: imagePrompt,
-            guidance: 3.5,
-            num_inference_steps: 28,
-            num_outputs: 1,
-          },
-        }),
+      const imgRes = await base44.integrations.Core.GenerateImage({
+        prompt: imagePrompt
       });
-
-      if (!imageRes.ok) {
-        throw new Error(`API error: ${imageRes.status}`);
-      }
-
-      let prediction = await imageRes.json();
-      
-      // Esperar resultado (máx 120s)
-      let waited = 0;
-      while (prediction.status === 'processing' && waited < 120) {
-        await new Promise(r => setTimeout(r, 1000));
-        waited++;
-        
-        const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
-          headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
-        });
-        prediction = await checkRes.json();
-      }
-
-      if (prediction.status === 'succeeded' && prediction.output) {
-        imageUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
-      } else {
-        throw new Error(`Generation failed: ${prediction.status}`);
-      }
+      imageUrl = imgRes.url;
+      console.log('[Image Generated]', imageUrl);
     } catch (error) {
-      console.error('[Image Gen Error]', error.message);
-      // No usar placeholder - intentar con Base44 LLM que genera URLs
-      try {
-        const llmRes = await base44.integrations.Core.GenerateImage({
-          prompt: imagePrompt
-        });
-        imageUrl = llmRes.url;
-      } catch (e) {
-        console.error('[Fallback Failed]', e.message);
-      }
+      console.error('[Image Generation Failed]', error.message);
     }
     
-    // Si todo falla, al menos retornar URL real de Unsplash con seed único
+    // Fallback a Unsplash si falla todo
     if (!imageUrl) {
-      const seed = Math.floor(Math.random() * 10000);
-      imageUrl = `https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop&q=${seed}`;
+      imageUrl = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop';
     }
 
     // Para reels, generar múltiples imágenes (frames)
