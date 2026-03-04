@@ -171,7 +171,7 @@ function LayoutInner({ children, currentPageName }) {
           </div>
 
           <button
-            onClick={() => base44.auth.logout()}
+            onClick={() => base44.auth.logout("/login")}
             className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all border border-red-500/20 hover:border-red-500/40 mt-2"
           >
             <LogOut className="w-3.5 h-3.5" />
