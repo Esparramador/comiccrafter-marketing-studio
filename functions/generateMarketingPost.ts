@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { topic, template } = await req.json();
+    const { topic, template, reference_image_url } = await req.json();
 
     if (!topic) {
       return Response.json(
