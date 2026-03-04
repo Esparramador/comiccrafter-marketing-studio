@@ -145,6 +145,24 @@ export default function TextEnhancer() {
         title="Text Enhancer"
         subtitle="Mejora tus textos: estructura, detalles, humor y acciones concretas"
         icon={Sparkles}
+        action={
+          messages.length > 0 && (
+            <div className="flex gap-2">
+              <Button
+                onClick={() => exportConversation("txt")}
+                className="bg-violet-600 hover:bg-violet-700 text-white gap-2 text-sm"
+              >
+                <FileDown className="w-4 h-4" /> Descargar TXT
+              </Button>
+              <Button
+                onClick={() => exportConversation("pdf")}
+                className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white gap-2 text-sm"
+              >
+                <FileDown className="w-4 h-4" /> Descargar PDF
+              </Button>
+            </div>
+          )
+        }
       />
 
       {/* Chat Area */}
