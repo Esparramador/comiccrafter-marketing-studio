@@ -155,7 +155,7 @@ Deno.serve(async (req) => {
     // Generate post content
     const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, template);
 
-    // Generate image with Replicate
+    // Generate image with Replicate (Flux)
     const replicateRes = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -163,13 +163,10 @@ Deno.serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        version: '9c7a21a6fe2e996e73c6ebf46a04bab4e95c36b5b0d0f34a5f5d7f7a0c1b1e1f',
+        version: '312e846ee2c7afc84b60a60174a5173435521281965576a18e2fbb0773f530bb',
         input: {
           prompt: imagePrompt,
-          width: 1024,
-          height: 1024,
-          guidance_scale: 7.5,
-          num_inference_steps: 50,
+          aspect_ratio: '1:1',
         },
       }),
     });
