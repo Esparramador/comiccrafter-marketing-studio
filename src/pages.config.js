@@ -56,6 +56,8 @@ import MarketingStudio from './pages/MarketingStudio';
 import SuperPrompt from './pages/SuperPrompt';
 import Vault from './pages/Vault';
 import Viewer from './pages/Viewer';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -69,6 +71,8 @@ export const PAGES = {
     "SuperPrompt": SuperPrompt,
     "Vault": Vault,
     "Viewer": Viewer,
+    "Profile": Profile,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {

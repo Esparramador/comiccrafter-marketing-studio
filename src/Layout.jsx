@@ -17,7 +17,10 @@ import {
   Shield,
   GalleryHorizontalEnd,
   Globe,
-  Wand2
+  Wand2,
+  User,
+  Settings as SettingsIcon,
+  LogOut
 } from "lucide-react";
 
 const NAV_KEYS = [
@@ -119,40 +122,59 @@ function LayoutInner({ children, currentPageName }) {
         </nav>
 
         <div className="p-4 border-t border-[var(--border-dim)] space-y-3">
-          <a
-            href="https://comiccrafter.es"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to={createPageUrl("Profile")}
+            onClick={() => setSidebarOpen(false)}
             className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
           >
-            <Globe className="w-3.5 h-3.5 text-emerald-400" />
-            comiccrafter.es ↗
-          </a>
-          <a
-            href="https://comic-crafter.myshopify.com"
-            target="_blank"
-            rel="noopener noreferrer"
+            <User className="w-3.5 h-3.5" />
+            Mi Perfil
+          </Link>
+          <Link
+            to={createPageUrl("Settings")}
+            onClick={() => setSidebarOpen(false)}
             className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
           >
-            <span className="text-[#96BF48] text-xs font-bold leading-none">S</span>
-            Shopify Store ↗
-          </a>
-          <a
-            href="https://www.instagram.com/comiccrafter.es"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
-          >
-            <span className="text-[10px] font-bold bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">IG</span>
-            @comiccrafter.es ↗
-          </a>
-          <LanguageSwitcher />
+            <SettingsIcon className="w-3.5 h-3.5" />
+            Configuración
+          </Link>
+
+          <div className="border-t border-[var(--border-dim)] pt-3 mt-3 space-y-2">
+            <a
+              href="https://comiccrafter.es"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
+            >
+              <Globe className="w-3.5 h-3.5 text-emerald-400" />
+              comiccrafter.es ↗
+            </a>
+            <a
+              href="https://comic-crafter.myshopify.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
+            >
+              <span className="text-[#96BF48] text-xs font-bold leading-none">S</span>
+              Shopify Store ↗
+            </a>
+            <a
+              href="https://www.instagram.com/comiccrafter.es"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
+            >
+              <span className="text-[10px] font-bold bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">IG</span>
+              @comiccrafter.es ↗
+            </a>
+            <LanguageSwitcher />
+          </div>
 
           <button
             onClick={() => base44.auth.logout()}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all border border-red-500/20 hover:border-red-500/40"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all border border-red-500/20 hover:border-red-500/40 mt-2"
           >
-            <span className="text-[10px] font-bold">🚪</span>
+            <LogOut className="w-3.5 h-3.5" />
             Cerrar sesión
           </button>
         </div>
