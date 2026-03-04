@@ -95,7 +95,7 @@ export default function PromptOutput({ label, icon: Icon, content, tipo, postId,
       </div>
       <div className="min-h-[120px] p-3 rounded-xl bg-black/20 border border-white/5">
         {content ? (
-          <p className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">{content}</p>
+          <p className={`text-sm text-gray-300 whitespace-pre-wrap leading-relaxed ${tipo === "luma" ? "font-mono text-xs text-cyan-200" : ""}`}>{content}</p>
         ) : (
           <p className="text-sm text-gray-600 italic">Genera contenido para ver el resultado aquí...</p>
         )}

@@ -14,7 +14,13 @@ Deno.serve(async (req) => {
     const res = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...payload, triggered_by: user.email, timestamp: new Date().toISOString() })
+      body: JSON.stringify({
+        ...payload,
+        triggered_by: user.email,
+        user_email: user.email,
+        user_name: user.full_name || user.email,
+        timestamp: new Date().toISOString()
+      })
     });
 
     return Response.json({ success: res.ok, status: res.status });

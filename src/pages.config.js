@@ -53,6 +53,7 @@ import SuperPrompt from './pages/SuperPrompt';
 import Viewer from './pages/Viewer';
 import Kanban from './pages/Kanban';
 import Vault from './pages/Vault';
+import Admin from './pages/Admin';
 import __Layout from './Layout.jsx';
 
 
@@ -63,6 +64,7 @@ export const PAGES = {
     "Viewer": Viewer,
     "Kanban": Kanban,
     "Vault": Vault,
+    "Admin": Admin,
 }
 
 export const pagesConfig = {
