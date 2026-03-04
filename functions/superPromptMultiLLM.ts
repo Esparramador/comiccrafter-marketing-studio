@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { idea_base, tone_label, image_url, mode = 'megaprompt', llms = ['gemini'] } = await req.json();
+    const { idea_base, tone_label, image_url, mode = 'megaprompt', llms = ['mistral'] } = await req.json();
     if (!idea_base) return Response.json({ error: 'idea_base requerida' }, { status: 400 });
 
     // Enriquecer idea con búsqueda en internet
