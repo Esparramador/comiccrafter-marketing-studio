@@ -9,18 +9,19 @@ import {
   Calendar,
   Archive,
   Menu,
-  X,
   Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { I18nProvider, useI18n } from "@/components/i18n/I18nContext";
+import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 
-const NAV_ITEMS = [
-  { name: "Dashboard", page: "Dashboard", icon: LayoutDashboard },
-  { name: "Laboratorio IA", page: "LabAI", icon: FlaskConical },
-  { name: "Súper Prompt", page: "SuperPrompt", icon: Sparkles },
-  { name: "Visor 3D/Vídeo", page: "Viewer", icon: Eye },
-  { name: "Calendario", page: "Kanban", icon: Calendar },
-  { name: "Bóveda", page: "Vault", icon: Archive },
+const NAV_KEYS = [
+  { key: "nav_dashboard", page: "Dashboard", icon: LayoutDashboard },
+  { key: "nav_lab", page: "LabAI", icon: FlaskConical },
+  { key: "nav_superprompt", page: "SuperPrompt", icon: Sparkles },
+  { key: "nav_viewer", page: "Viewer", icon: Eye },
+  { key: "nav_kanban", page: "Kanban", icon: Calendar },
+  { key: "nav_vault", page: "Vault", icon: Archive },
 ];
 
 export default function Layout({ children, currentPageName }) {
