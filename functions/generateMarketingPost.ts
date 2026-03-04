@@ -136,7 +136,11 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
     }),
   });
 
-  if (!copyResponse.ok) throw new Error('OpenAI API error');
+  if (!copyResponse.ok) {
+    const errorData = await copyResponse.json();
+    console.error('OpenAI Error:', errorData);
+    throw new Error(`OpenAI API error: ${errorData.error?.message || copyResponse.statusText}`);
+  }
   const copyData = await copyResponse.json();
   const copy = copyData.choices[0].message.content;
 
