@@ -81,6 +81,9 @@ export default function Dashboard() {
     queryClient.invalidateQueries({ queryKey: ["prompts-count"] });
   };
 
+  if (isAuthed === null) return <div className="min-h-screen bg-[#0a0a0f]" />;
+  if (!isAuthed) return null;
+
   return (
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Animated hero banner */}
