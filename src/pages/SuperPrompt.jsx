@@ -241,11 +241,47 @@ export default function SuperPrompt() {
           </div>
         </div>
 
-        {/* Tone indicator */}
+        {/* Mode selector */}
+        <div className="space-y-3">
+          <label className="text-xs text-gray-500 font-medium">Modo de generación</label>
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="mode" value="megaprompt" checked={mode === "megaprompt"} onChange={(e) => setMode(e.target.value)} className="w-4 h-4" />
+              <span className="text-sm text-gray-400">Megaprompt (rápido)</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="mode" value="sequential" checked={mode === "sequential"} onChange={(e) => setMode(e.target.value)} className="w-4 h-4" />
+              <span className="text-sm text-gray-400">Secuencial (detallado)</span>
+            </label>
+          </div>
+        </div>
+
+        {/* LLM selector */}
+        <div className="space-y-3">
+          <label className="text-xs text-gray-500 font-medium">Modelos IA</label>
+          <div className="flex gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={selectedLLMs.includes("gemini")} onChange={(e) => {
+                if (e.target.checked) setSelectedLLMs([...selectedLLMs, "gemini"]);
+                else setSelectedLLMs(selectedLLMs.filter(l => l !== "gemini"));
+              }} className="w-4 h-4" />
+              <span className="text-sm text-gray-400">Gemini</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={selectedLLMs.includes("openai")} onChange={(e) => {
+                if (e.target.checked) setSelectedLLMs([...selectedLLMs, "openai"]);
+                else setSelectedLLMs(selectedLLMs.filter(l => l !== "openai"));
+              }} className="w-4 h-4" />
+              <span className="text-sm text-gray-400">ChatGPT</span>
+            </label>
+          </div>
+        </div>
+
+        {/* Info banner */}
         <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-500/5 border border-amber-500/10">
           <span className="text-xs text-amber-400">⚠️</span>
           <p className="text-xs text-amber-300/80">
-            <strong>Luma prompt</strong> siempre en inglés para máxima calidad. Copy e Voz: <strong>{toneLabel}</strong>
+            <strong>Luma prompt</strong> siempre en inglés. Copy e Voz: <strong>{toneLabel}</strong>. Modo: <strong>{mode === "megaprompt" ? "Una pasada" : "4 pasos secuenciales"}</strong>
           </p>
         </div>
 
