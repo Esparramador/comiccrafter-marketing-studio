@@ -159,13 +159,13 @@ function LayoutInner({ children, currentPageName }) {
               Shopify Store ↗
             </a>
             <a
-              href="https://www.instagram.com/comiccrafter.es"
+              href="https://www.instagram.com/comiccrafter_ai"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
             >
               <span className="text-[10px] font-bold bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">IG</span>
-              @comiccrafter.es ↗
+              @comiccrafter_ai ↗
             </a>
             <LanguageSwitcher />
           </div>
