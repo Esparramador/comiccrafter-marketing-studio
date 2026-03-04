@@ -132,13 +132,13 @@ FORMATO DE SALIDA:
     const results = {};
 
     if (combo && llms.includes('gemini') && llms.includes('openai')) {
-      // MODO COMPLEMENTARIO: Gemini genera → ChatGPT refina/complementa
+      // MODO COMPLEMENTARIO: Gemini genera → ChatGPT refina/complementa (CON CONTEXTO WEB)
       const finalPrompt = `${promptsmithSystem}\n\nIDEA_DEL_USUARIO: ${idea_base}`;
 
-      // Step 1: Gemini genera versión base
-      const geminiBase = await callGemini(finalPrompt);
+      // Step 1: Gemini genera versión base (CON CONTEXTO WEB)
+      const geminiBase = await callGemini(finalPrompt, true);
 
-      // Step 2: ChatGPT refina cada campo basándose en el output de Gemini
+      // Step 2: ChatGPT refina cada campo basándose en el output de Gemini (CON CONTEXTO WEB)
       const refinementPrompt = `${promptsmithSystem}\n\nREFINAMIENTO Y COMPLEMENTO:
 
 Dado este contenido base de Gemini:
@@ -153,7 +153,7 @@ Mantén la esencia original pero hazlo MÁS épico, MÁS detallado, MÁS impacta
 
 FORMATO: {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`;
 
-      const openaiRefined = await callOpenAI(refinementPrompt);
+      const openaiRefined = await callOpenAI(refinementPrompt, true);
 
       // Step 3: Fusiona intelligentemente - toma lo mejor de ambos
       const fusePrompt = `${promptsmithSystem}\n\nFUSIÓN INTELIGENTE:
@@ -173,7 +173,7 @@ TAREA: Crea la MEJOR versión final kombinando lo mejor de cada una:
 
 FORMATO: {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`;
 
-      const finalFused = await callGemini(fusePrompt);
+      const finalFused = await callGemini(fusePrompt, true);
       results.fused = finalFused;
       results.gemini_base = geminiBase;
       results.openai_refined = openaiRefined;
