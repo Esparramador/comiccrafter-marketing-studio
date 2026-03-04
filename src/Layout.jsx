@@ -145,10 +145,7 @@ function LayoutInner({ children, currentPageName }) {
             @comiccrafter.es ↗
           </a>
           <LanguageSwitcher />
-          <div className="px-3 py-2 rounded-xl bg-gradient-to-r from-violet-600/10 to-fuchsia-600/10 border border-violet-500/20">
-            <p className="text-[11px] text-violet-300 font-medium">ComicCrafter AI</p>
-            <p className="text-[10px] text-gray-500 mt-0.5">v1.0 — Marketing Studio</p>
-          </div>
+
         </div>
       </aside>
 
