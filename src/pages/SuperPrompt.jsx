@@ -127,14 +127,25 @@ export default function SuperPrompt() {
     // Auto save to post if selected
     if (selectedPostId) {
       await base44.entities.Post.update(selectedPostId, {
-        instagram_copy: res.instagram_copy || "",
-        luma_prompt: res.luma_prompt || "",
-        elevenlabs_script: res.elevenlabs_script || "",
+        instagram_copy: data.instagram_copy || "",
+        luma_prompt: data.luma_prompt || "",
+        elevenlabs_script: data.elevenlabs_script || "",
         status: "en_produccion",
       });
       queryClient.invalidateQueries({ queryKey: ["posts-all"] });
       toast.success("Resultados guardados en el Post");
     }
+
+    // Disparar webhook Make.com
+    base44.functions.invoke("makeWebhook", {
+      event: "content_generated",
+      post_id: selectedPostId || null,
+      idea_base: ideaBase,
+      tone,
+      instagram_copy: data.instagram_copy || "",
+      luma_prompt: data.luma_prompt || "",
+      elevenlabs_script: data.elevenlabs_script || "",
+    });
 
     setGenerating(false);
   };
