@@ -133,12 +133,18 @@ export default function SuperPrompt() {
       image_url: imageUrl || null,
       mode: mode,
       llms: selectedLLMs,
+      combo: comboMode && selectedLLMs.includes("gemini") && selectedLLMs.includes("openai"),
     });
     const data = res.data || {};
 
-    // Si hay múltiples LLMs, usa el primero disponible para guardar
-    const primaryLLM = selectedLLMs[0];
-    const primaryData = data[primaryLLM] || data.gemini || data.openai || {};
+    // Si es modo combo, usa la versión fusionada; si no, usa la primera disponible
+    let primaryData;
+    if (comboMode && data.fused) {
+      primaryData = data.fused;
+    } else {
+      const primaryLLM = selectedLLMs[0];
+      primaryData = data[primaryLLM] || data.gemini || data.openai || {};
+    }
 
     setOutputs({
       instagram_copy: primaryData.instagram_copy || "",
