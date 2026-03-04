@@ -70,8 +70,8 @@ CAMPO 3: elevenlabs_script
 FORMATO DE SALIDA:
 {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`;
 
-    // Función para llamar a Gemini
-    const callGemini = async (systemMsg) => {
+    // Función para llamar a Gemini (con contexto web integrado)
+    const callGemini = async (systemMsg, includeWeb = false) => {
       const parts = [{ text: systemMsg }];
       if (image_url) {
         try {
