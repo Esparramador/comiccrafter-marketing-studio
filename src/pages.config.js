@@ -47,26 +47,26 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import Admin from './pages/Admin';
 import Dashboard from './pages/Dashboard';
+import Gallery from './pages/Gallery';
+import Kanban from './pages/Kanban';
 import LabAI from './pages/LabAI';
 import SuperPrompt from './pages/SuperPrompt';
 import Vault from './pages/Vault';
 import Viewer from './pages/Viewer';
-import Admin from './pages/Admin';
-import Gallery from './pages/Gallery';
-import Kanban from './pages/Kanban';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "Admin": Admin,
     "Dashboard": Dashboard,
+    "Gallery": Gallery,
+    "Kanban": Kanban,
     "LabAI": LabAI,
     "SuperPrompt": SuperPrompt,
     "Vault": Vault,
     "Viewer": Viewer,
-    "Admin": Admin,
-    "Gallery": Gallery,
-    "Kanban": Kanban,
 }
 
 export const pagesConfig = {

@@ -19,6 +19,12 @@ const BG_IMAGES = [
 ];
 
 export default function Dashboard() {
+  React.useEffect(() => {
+    base44.auth.me()
+      .then((u) => { if (!u) base44.auth.redirectToLogin(); })
+      .catch(() => base44.auth.redirectToLogin());
+  }, []);
+
   const [bgIndex, setBgIndex] = React.useState(0);
   const [fadeIn, setFadeIn] = React.useState(true);
 
