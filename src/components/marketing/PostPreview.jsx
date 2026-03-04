@@ -24,12 +24,22 @@ export default function PostPreview({ post, onApprove, approving }) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Image Preview */}
-      <div className="rounded-2xl overflow-hidden bg-[var(--surface-raised)] border border-[var(--border-dim)]">
-        <img
-          src={post.imageUrl}
-          alt="Generated post"
-          className="w-full h-auto aspect-square object-cover"
-        />
+      <div className="rounded-2xl overflow-hidden bg-[var(--surface-raised)] border border-[var(--border-dim)] flex items-center justify-center min-h-96">
+        {post.imageUrl ? (
+          <img
+            src={post.imageUrl}
+            alt="Generated post"
+            className="w-full h-auto aspect-square object-cover"
+            onError={(e) => {
+              e.target.alt = "Error loading image";
+              e.target.className = "w-full h-full bg-gray-800 flex items-center justify-center text-gray-500";
+            }}
+          />
+        ) : (
+          <div className="text-center text-gray-500 p-8">
+            <p className="text-sm">No hay imagen disponible</p>
+          </div>
+        )}
       </div>
 
       {/* Text Content */}
