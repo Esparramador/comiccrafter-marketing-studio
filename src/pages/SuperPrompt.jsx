@@ -81,9 +81,17 @@ export default function SuperPrompt() {
 
   const queryClient = useQueryClient();
 
+  const [userEmail, setUserEmail] = useState(null);
+  useEffect(() => {
+    base44.auth.me()
+      .then((u) => { if (!u) base44.auth.redirectToLogin(); else setUserEmail(u.email); })
+      .catch(() => base44.auth.redirectToLogin());
+  }, []);
+
   const { data: posts = [] } = useQuery({
-    queryKey: ["posts-all"],
-    queryFn: () => base44.entities.Post.list("-created_date", 50),
+    queryKey: ["posts-all", userEmail],
+    enabled: !!userEmail,
+    queryFn: () => base44.entities.Post.filter({ created_by: userEmail }, "-created_date", 50),
   });
 
   useEffect(() => {
