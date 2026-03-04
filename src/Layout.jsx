@@ -116,7 +116,7 @@ function LayoutInner({ children, currentPageName }) {
             </div>
             <span className="text-sm font-bold">ComicCrafter</span>
           </div>
-          <div className="w-9" />
+          <LanguageSwitcher />
         </header>
 
         <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto">
