@@ -125,30 +125,8 @@ FORMATO DE SALIDA:
       }
     };
 
-    // Función para llamar a OpenAI (ChatGPT)
-    const callOpenAI = async (systemMsg, includeWeb = false) => {
-      const msgContent = includeWeb && webContext 
-        ? `CONTEXTO WEB VERIFICADO:\n${webContext}\n\n---\n\n${systemMsg}`
-        : systemMsg;
-
-      const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [{ role: 'user', content: msgContent }],
-          temperature: 0.8,
-          response_format: { type: 'json_object' }
-        })
-      });
-      const data = await openaiRes.json();
-      if (!openaiRes.ok) throw new Error(data.error?.message || 'OpenAI error');
-      const raw = data.choices?.[0]?.message?.content || '{}';
-      return JSON.parse(raw);
-    };
+    // Alias para compatibilidad - usa Mistral en lugar de OpenAI
+    const callOpenAI = callMistral;
 
     const results = {};
 
