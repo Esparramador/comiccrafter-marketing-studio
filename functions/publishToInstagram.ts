@@ -23,12 +23,17 @@ Deno.serve(async (req) => {
 
     if (!accessToken || !businessAccountId) {
       return Response.json(
-        { error: 'Instagram credentials no configurados' },
+        { error: 'Instagram credentials no configurados. Configura INSTAGRAM_ACCESS_TOKEN (long-lived) e INSTAGRAM_BUSINESS_ACCOUNT_ID' },
         { status: 500 }
       );
     }
 
-    // Step 1: Upload image to Instagram (create media)
+    // Step 1: Set post to PENDING state (waiting for publication)
+    await base44.entities.MarketingPost.update(postId, {
+      status: 'pending',
+    });
+
+    // Step 2: Upload image to Instagram (create media container)
     const mediaCaption = `${copy}\n\n${hashtags}`;
 
     const uploadRes = await fetch(
@@ -46,6 +51,8 @@ Deno.serve(async (req) => {
 
     if (!uploadRes.ok) {
       const error = await uploadRes.json();
+      // Revert to draft on error
+      await base44.entities.MarketingPost.update(postId, { status: 'draft' });
       return Response.json(
         { error: `Instagram API error: ${error.error?.message || 'Unknown'}` },
         { status: 400 }
@@ -55,7 +62,7 @@ Deno.serve(async (req) => {
     const uploadData = await uploadRes.json();
     const mediaId = uploadData.id;
 
-    // Step 2: Publish the media
+    // Step 3: Publish the media (2-step flow)
     const publishRes = await fetch(
       `https://graph.instagram.com/v18.0/${businessAccountId}/media_publish`,
       {
@@ -70,6 +77,8 @@ Deno.serve(async (req) => {
 
     if (!publishRes.ok) {
       const error = await publishRes.json();
+      // Revert to draft on error
+      await base44.entities.MarketingPost.update(postId, { status: 'draft' });
       return Response.json(
         { error: `Publish failed: ${error.error?.message || 'Unknown'}` },
         { status: 400 }
@@ -78,7 +87,7 @@ Deno.serve(async (req) => {
 
     const publishData = await publishRes.json();
 
-    // Step 3: Update post status in database
+    // Step 4: Update post status to PUBLISHED with Instagram ID
     await base44.entities.MarketingPost.update(postId, {
       status: 'published',
       instagram_post_id: publishData.id,

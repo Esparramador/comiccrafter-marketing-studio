@@ -52,10 +52,10 @@ import Dashboard from './pages/Dashboard';
 import Gallery from './pages/Gallery';
 import Kanban from './pages/Kanban';
 import LabAI from './pages/LabAI';
+import MarketingStudio from './pages/MarketingStudio';
 import SuperPrompt from './pages/SuperPrompt';
 import Vault from './pages/Vault';
 import Viewer from './pages/Viewer';
-import MarketingStudio from './pages/MarketingStudio';
 import __Layout from './Layout.jsx';
 
 
@@ -65,10 +65,10 @@ export const PAGES = {
     "Gallery": Gallery,
     "Kanban": Kanban,
     "LabAI": LabAI,
+    "MarketingStudio": MarketingStudio,
     "SuperPrompt": SuperPrompt,
     "Vault": Vault,
     "Viewer": Viewer,
-    "MarketingStudio": MarketingStudio,
 }
 
 export const pagesConfig = {
