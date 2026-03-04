@@ -212,6 +212,61 @@ Deno.serve(async (req) => {
       imageUrl = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop';
     }
 
+    // Para reels, generar múltiples imágenes (frames)
+    let mediaUrls = [imageUrl];
+    
+    if (contentType === 'reel' && maxImages && maxImages > 1) {
+      // Generar imágenes adicionales con variaciones del prompt
+      const variations = [
+        `${imagePrompt}, scene 1, beginning of process`,
+        `${imagePrompt}, scene 2, middle transition`,
+        `${imagePrompt}, scene 3, final result`
+      ];
+
+      for (const varPrompt of variations.slice(0, maxImages - 1)) {
+        try {
+          const varRes = await fetch('https://api.replicate.com/v1/predictions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              version: '8beff3369e81422112d93b89ca01426147de542cd4684c43b0427293f88518e47',
+              input: {
+                prompt: varPrompt,
+                negative_prompt: 'text, watermark, low quality',
+                num_inference_steps: 50,
+                guidance_scale: 7.5,
+              },
+            }),
+          });
+
+          if (varRes.ok) {
+            const varData = await varRes.json();
+            let varPred = varData;
+            let varAttempts = 0;
+            
+            while (varPred.status !== 'succeeded' && varPred.status !== 'failed' && varAttempts < 60) {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${varPred.id}`, {
+                headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
+              });
+              varPred = await checkRes.json();
+              varAttempts++;
+            }
+
+            if (varPred.status === 'succeeded' && varPred.output) {
+              const varUrl = Array.isArray(varPred.output) ? varPred.output[0] : varPred.output;
+              if (varUrl) mediaUrls.push(varUrl);
+            }
+          }
+        } catch (e) {
+          console.error('Variation generation error:', e.message);
+        }
+      }
+    }
+
     // Save to database
     const post = await base44.entities.MarketingPost.create({
       topic,
@@ -232,6 +287,7 @@ Deno.serve(async (req) => {
       copy,
       hashtags,
       imageUrl,
+      mediaUrls,
       topic,
       template: templateKey,
       contentType,
