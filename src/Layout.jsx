@@ -32,6 +32,7 @@ const NAV_KEYS = [
   { key: "nav_kanban", page: "Kanban", icon: Calendar },
   { key: "nav_vault", page: "Vault", icon: Archive },
   { key: "nav_cc_marketing", page: "MarketingStudio", icon: Wand2 },
+  { key: "nav_text_enhancer", page: "TextEnhancer", icon: Sparkles },
   { key: "nav_admin", page: "Admin", icon: Shield },
 ];
 
