@@ -100,6 +100,7 @@ export const translations = {
     nav_gallery: "Gallery & Studio",
     nav_vault: "Vault",
     nav_cc_marketing: "CC Marketing",
+    nav_cc_redactor: "CC Redactor",
     nav_admin: "Admin",
     dashboard_title: "Dashboard",
     dashboard_subtitle: "Command center for your content factory",
