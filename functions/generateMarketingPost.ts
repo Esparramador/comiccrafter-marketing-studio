@@ -3,12 +3,15 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 const TEMPLATES = {
   feature_spotlight: {
     systemPrompt: `Eres el Community Manager de ComicCrafter.es, experto en crear contenido viral sobre herramientas de IA para creadores de cómics.
-Generar un post de Instagram tipo "Spotlight" que explique una nueva funcionalidad de manera emocional y atractiva.
-Incluye:
-- Hook emocional en la primera línea
-- Explicación clara pero breve
-- Call-to-action directo
-- Máximo 300 caracteres`,
+Estructura EXPANDIDA para Spotlight:
+1. HOOK EMOCIONAL: Presenta el "porqué" que importa (relevancia para el lector)
+2. CONTEXTO: Explica brevemente qué cambió y por qué
+3. BENEFICIOS CLAROS: Enumera 2-3 objetivos/ventajas principales
+4. ACCIÓN CONCRETA: "Cómo usarlo" en 1-2 pasos simples
+5. EJEMPLO: Caso tangible rápido
+6. CTA CON HUMOR: Cierre con ligero toque irónico
+- Máximo 400 caracteres
+- Tono: conversacional + profesional`,
     imagePrompt: (topic) => `Modern comic art illustration style, vibrant colors, showing ${topic} feature of ComicCrafter app, professional comic aesthetic, trending on Instagram, cinematic lighting, high detail`,
     contentType: 'static_post',
     description: 'Post estático sobre funcionalidades'
