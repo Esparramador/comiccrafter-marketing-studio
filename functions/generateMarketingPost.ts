@@ -161,7 +161,8 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
     : `Para un post de Instagram sobre "${topic}" con estrategia de storytelling visual, genera 10-15 hashtags relevantes y SEO-optimized. 
        Incluye: #ComicIA #ComicCrafter #DigitalManga #ProcesoCreativo + otros específicos del tema "${topic}"`;
 
-  const geminiResponse = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', {
+  const geminiApiKey = Deno.env.get('GEMINI_API_KEY');
+  const geminiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -178,7 +179,6 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
       safetySettings: [
         { category: 'HARM_CATEGORY_UNSPECIFIED', threshold: 'BLOCK_NONE' },
       ],
-      apiKey: Deno.env.get('GEMINI_API_KEY'),
     }),
   });
 
