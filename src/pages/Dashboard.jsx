@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { LayoutDashboard } from "lucide-react";
@@ -8,6 +8,7 @@ import AssetUploader from "@/components/dashboard/AssetUploader";
 import IdeaInput from "@/components/dashboard/IdeaInput";
 import RecentAssets from "@/components/dashboard/RecentAssets";
 import RecentPosts from "@/components/dashboard/RecentPosts";
+import FreeStackBanner from "@/components/dashboard/FreeStackBanner";
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
