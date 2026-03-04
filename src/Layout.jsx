@@ -16,7 +16,8 @@ import {
   Zap,
   Shield,
   GalleryHorizontalEnd,
-  Globe
+  Globe,
+  Wand2
 } from "lucide-react";
 
 const NAV_KEYS = [
@@ -27,6 +28,7 @@ const NAV_KEYS = [
   { key: "nav_viewer", page: "Viewer", icon: Eye },
   { key: "nav_kanban", page: "Kanban", icon: Calendar },
   { key: "nav_vault", page: "Vault", icon: Archive },
+  { key: "nav_marketing", page: "MarketingStudio", icon: Wand2 },
   { key: "nav_admin", page: "Admin", icon: Shield },
 ];
 
