@@ -155,45 +155,44 @@ Deno.serve(async (req) => {
     // Generate post content
     const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, template);
 
-    // Generate image with Replicate (Flux)
-    const replicateRes = await fetch('https://api.replicate.com/v1/predictions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        version: '312e846ee2c7afc84b60a60174a5173435521281965576a18e2fbb0773f530bb',
-        input: {
-          prompt: imagePrompt,
-          aspect_ratio: '1:1',
-        },
-      }),
-    });
-
-    if (!replicateRes.ok) {
-      const errorText = await replicateRes.text();
-      console.error('Replicate Error:', errorText);
-      throw new Error(`Replicate API error: ${errorText}`);
-    }
-
-    const replicateData = await replicateRes.json();
+    // Generate image with Replicate
+    let imageUrl = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop';
     
-    // Poll for completion
-    let prediction = replicateData;
-    while (prediction.status !== 'succeeded' && prediction.status !== 'failed') {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
-        headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
+    try {
+      const replicateRes = await fetch('https://api.replicate.com/v1/predictions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: 'e731f5e6e6417d9a1c014beb38330d5be26c3b46e51ee55590b351923dae90dc',
+          input: {
+            prompt: imagePrompt,
+            aspect_ratio: '1:1',
+          },
+        }),
       });
-      prediction = await checkRes.json();
-    }
 
-    if (prediction.status === 'failed') {
-      throw new Error('Image generation failed');
-    }
+      if (replicateRes.ok) {
+        const replicateData = await replicateRes.json();
+        
+        let prediction = replicateData;
+        while (prediction.status !== 'succeeded' && prediction.status !== 'failed') {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
+            headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
+          });
+          prediction = await checkRes.json();
+        }
 
-    const imageUrl = prediction.output?.[0] || prediction.output;
+        if (prediction.status === 'succeeded') {
+          imageUrl = prediction.output?.[0] || prediction.output;
+        }
+      }
+    } catch (imgError) {
+      console.error('Image generation failed, using placeholder:', imgError.message);
+    }
 
     // Save to database
     const post = await base44.entities.MarketingPost.create({
