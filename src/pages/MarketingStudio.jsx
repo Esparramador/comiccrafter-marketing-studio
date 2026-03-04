@@ -20,10 +20,17 @@ export default function MarketingStudio() {
   const [uploadingRef, setUploadingRef] = useState(false);
 
   React.useEffect(() => {
-    base44.auth.me().then((u) => {
-      if (!u) base44.auth.redirectToLogin();
-      setUserEmail(u?.email);
-    });
+    base44.auth.me()
+      .then((u) => {
+        if (!u) {
+          base44.auth.redirectToLogin("/marketing");
+        } else {
+          setUserEmail(u?.email);
+        }
+      })
+      .catch(() => {
+        base44.auth.redirectToLogin("/marketing");
+      });
   }, []);
 
   // Fetch user's posts
