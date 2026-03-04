@@ -105,7 +105,11 @@ FORMATO DE SALIDA:
     };
 
     // Función para llamar a OpenAI (ChatGPT)
-    const callOpenAI = async (systemMsg) => {
+    const callOpenAI = async (systemMsg, includeWeb = false) => {
+      const msgContent = includeWeb && webContext 
+        ? `CONTEXTO WEB VERIFICADO:\n${webContext}\n\n---\n\n${systemMsg}`
+        : systemMsg;
+
       const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -114,7 +118,7 @@ FORMATO DE SALIDA:
         },
         body: JSON.stringify({
           model: 'gpt-4o-mini',
-          messages: [{ role: 'user', content: systemMsg }],
+          messages: [{ role: 'user', content: msgContent }],
           temperature: 0.8,
           response_format: { type: 'json_object' }
         })
