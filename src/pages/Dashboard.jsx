@@ -64,11 +64,43 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <SectionHeader
-        title="Dashboard"
-        subtitle="Centro de mando de tu fábrica de contenido"
-        icon={LayoutDashboard}
-      />
+      {/* Animated hero banner */}
+      <div className="relative overflow-hidden rounded-3xl h-48 md:h-64 shadow-2xl">
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-opacity duration-[800ms]"
+          style={{
+            backgroundImage: `url(${BG_IMAGES[bgIndex]})`,
+            opacity: fadeIn ? 1 : 0,
+          }}
+        />
+        {/* Overlay gradient */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+        {/* Dot indicators */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5">
+          {BG_IMAGES.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => { setFadeIn(false); setTimeout(() => { setBgIndex(i); setFadeIn(true); }, 400); }}
+              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === bgIndex ? "bg-white w-4" : "bg-white/40"}`}
+            />
+          ))}
+        </div>
+
+        {/* Content */}
+        <div className="absolute inset-0 flex flex-col justify-center px-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/30">
+              <LayoutDashboard className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow">Dashboard</h1>
+              <p className="text-sm text-white/70">Centro de mando de tu fábrica de contenido</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <StatsOverview counts={counts} />
       <SystemActivityLog posts={posts} />
       <FreeStackBanner />
