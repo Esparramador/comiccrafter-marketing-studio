@@ -81,10 +81,11 @@ export default function Dashboard() {
       {/* Animated hero banner */}
       <div className="relative overflow-hidden rounded-3xl h-48 md:h-64 shadow-2xl">
         <div
-          className="absolute inset-0 bg-cover bg-center transition-opacity duration-[800ms]"
+          className="absolute inset-0 bg-cover bg-center transition-opacity"
           style={{
             backgroundImage: `url(${BG_IMAGES[bgIndex]})`,
             opacity: fadeIn ? 1 : 0,
+            transitionDuration: "800ms",
           }}
         />
         {/* Overlay gradient */}
