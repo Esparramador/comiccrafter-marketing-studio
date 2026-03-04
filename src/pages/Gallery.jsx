@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Grid, Image, Video, Box, Search } from "lucide-react";
@@ -10,11 +10,20 @@ import StudioModal from "@/components/gallery/StudioModal";
 export default function Gallery() {
   const [search, setSearch] = useState("");
   const [selectedPost, setSelectedPost] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
   const queryClient = useQueryClient();
 
+  useEffect(() => {
+    base44.auth.me().then((u) => setUserEmail(u?.email || null));
+  }, []);
+
   const { data: posts = [], isLoading } = useQuery({
-    queryKey: ["posts-gallery"],
-    queryFn: () => base44.entities.Post.list("-updated_date", 100),
+    queryKey: ["posts-gallery", userEmail],
+    enabled: userEmail !== null,
+    queryFn: () =>
+      userEmail
+        ? base44.entities.Post.filter({ created_by: userEmail }, "-updated_date", 100)
+        : [],
   });
 
   const filtered = posts.filter((p) => {
