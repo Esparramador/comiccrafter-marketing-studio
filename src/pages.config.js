@@ -54,6 +54,7 @@ import Vault from './pages/Vault';
 import Viewer from './pages/Viewer';
 import Admin from './pages/Admin';
 import Gallery from './pages/Gallery';
+import Kanban from './pages/Kanban';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "Viewer": Viewer,
     "Admin": Admin,
     "Gallery": Gallery,
+    "Kanban": Kanban,
 }
 
 export const pagesConfig = {
