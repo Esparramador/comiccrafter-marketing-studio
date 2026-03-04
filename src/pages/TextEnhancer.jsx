@@ -84,6 +84,48 @@ export default function TextEnhancer() {
     document.body.removeChild(element);
   };
 
+  const exportConversation = (format) => {
+    const conversation = messages.map((msg) => `${msg.role === "user" ? "TÚ" : "ASISTENTE"}:\n${msg.content}`).join("\n\n---\n\n");
+    
+    if (format === "txt") {
+      const element = document.createElement("a");
+      element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(conversation));
+      element.setAttribute("download", "conversacion-text-enhancer.txt");
+      element.style.display = "none";
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    } else if (format === "pdf") {
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text("Text Enhancer - Conversación", 20, 20);
+      doc.setFontSize(10);
+      doc.setTextColor(100);
+      doc.text(`Fecha: ${new Date().toLocaleDateString("es-ES")}`, 20, 30);
+      
+      doc.setFontSize(11);
+      doc.setTextColor(0);
+      let yOffset = 45;
+      const pageHeight = doc.internal.pageSize.height;
+      
+      messages.forEach((msg) => {
+        const prefix = msg.role === "user" ? "TÚ: " : "ASISTENTE: ";
+        const text = doc.splitTextToSize(prefix + msg.content, 170);
+        
+        if (yOffset + text.length * 5 > pageHeight - 20) {
+          doc.addPage();
+          yOffset = 20;
+        }
+        
+        doc.setTextColor(msg.role === "user" ? 102, 51, 153 : 50, 50, 50);
+        doc.text(text, 20, yOffset);
+        yOffset += text.length * 5 + 5;
+      });
+      
+      doc.save("conversacion-text-enhancer.pdf");
+    }
+  };
+
   if (!conversationId) {
     return (
       <div className="max-w-4xl mx-auto space-y-6">
