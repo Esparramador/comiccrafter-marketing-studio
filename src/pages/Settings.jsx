@@ -5,7 +5,7 @@ import { Settings, Key, Instagram, Save, Loader2, Eye, EyeOff, Bell } from "luci
 import SectionHeader from "@/components/shared/SectionHeader";
 import { toast } from "sonner";
 
-export default function SettingsPage() {
+export default function Settings() {
   useEffect(() => {
     base44.auth.me()
       .then((u) => { if (!u) base44.auth.redirectToLogin(); })
