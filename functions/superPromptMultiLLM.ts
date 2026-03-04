@@ -114,7 +114,53 @@ FORMATO DE SALIDA:
 
     const results = {};
 
-    if (mode === 'megaprompt') {
+    if (combo && llms.includes('gemini') && llms.includes('openai')) {
+      // MODO COMPLEMENTARIO: Gemini genera → ChatGPT refina/complementa
+      const finalPrompt = `${promptsmithSystem}\n\nIDEA_DEL_USUARIO: ${idea_base}`;
+
+      // Step 1: Gemini genera versión base
+      const geminiBase = await callGemini(finalPrompt);
+
+      // Step 2: ChatGPT refina cada campo basándose en el output de Gemini
+      const refinementPrompt = `${promptsmithSystem}\n\nREFINAMIENTO Y COMPLEMENTO:
+
+Dado este contenido base de Gemini:
+${JSON.stringify(geminiBase, null, 2)}
+
+TAREA: Refina y mejora CADA CAMPO según estas reglas:
+- instagram_copy: Mejora la persuasión, añade más emojis, hashtags más específicos, CTA más fuerte
+- luma_prompt: Expande detalles visuales, añade más técnicas de cámara, especifica más colores/texturas
+- elevenlabs_script: Pausa dramáticas mejor, puntuación para énfasis, más emoción vocal
+
+Mantén la esencia original pero hazlo MÁS épico, MÁS detallado, MÁS impactante.
+
+FORMATO: {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`;
+
+      const openaiRefined = await callOpenAI(refinementPrompt);
+
+      // Step 3: Fusiona intelligentemente - toma lo mejor de ambos
+      const fusePrompt = `${promptsmithSystem}\n\nFUSIÓN INTELIGENTE:
+
+Tienes dos versiones:
+
+VERSIÓN GEMINI:
+${JSON.stringify(geminiBase, null, 2)}
+
+VERSIÓN CHATGPT (REFINADA):
+${JSON.stringify(openaiRefined, null, 2)}
+
+TAREA: Crea la MEJOR versión final kombinando lo mejor de cada una:
+- instagram_copy: Combina el tono más impactante + emojis/hashtags más efectivos
+- luma_prompt: Usa detalles + técnicas más específicas, unifica coherencia visual
+- elevenlabs_script: Pacing + énfasis emocional óptimos
+
+FORMATO: {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`;
+
+      const finalFused = await callGemini(fusePrompt);
+      results.fused = finalFused;
+      results.gemini_base = geminiBase;
+      results.openai_refined = openaiRefined;
+    } else if (mode === 'megaprompt') {
       // Megaprompt: una sola pasada con sistema PROMPTSMITH completo
       const finalPrompt = `${promptsmithSystem}\n\nIDEA_DEL_USUARIO: ${idea_base}`;
 
