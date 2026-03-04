@@ -14,11 +14,22 @@ import { cn } from "@/lib/utils";
 const STATUSES = ["idea", "en_produccion", "en_revision", "programado", "publicado"];
 
 export default function Kanban() {
+  React.useEffect(() => {
+    base44.auth.me()
+      .then((u) => { if (!u) base44.auth.redirectToLogin(); })
+      .catch(() => base44.auth.redirectToLogin());
+  }, []);
+
   const queryClient = useQueryClient();
   const [view, setView] = useState("calendar");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(null);
   const [selectedEvents, setSelectedEvents] = useState([]);
+  const [userEmail, setUserEmail] = useState(null);
+
+  React.useEffect(() => {
+    base44.auth.me().then((u) => setUserEmail(u?.email || null));
+  }, []);
 
   // Google Calendar events
   const { data: gcalData, isLoading: gcalLoading, refetch: refetchGcal } = useQuery({
