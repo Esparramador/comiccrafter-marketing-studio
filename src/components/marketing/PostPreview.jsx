@@ -3,12 +3,14 @@ import { base44 } from "@/api/base44Client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Copy, Download, Check, Instagram, Loader2 } from "lucide-react";
+import PostPublishDialog from "./PostPublishDialog";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export default function PostPreview({ post, onApprove, approving }) {
   const [copied, setCopied] = React.useState(false);
   const [publishing, setPublishing] = React.useState(false);
+  const [showPublishDialog, setShowPublishDialog] = React.useState(false);
 
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
@@ -114,39 +116,24 @@ export default function PostPreview({ post, onApprove, approving }) {
 
         {/* Publish to Instagram Button */}
         {post.id && (
-          <Button
-            onClick={async () => {
-              setPublishing(true);
-              try {
-                const res = await base44.functions.invoke("publishToInstagram", {
-                  postId: post.id,
-                  imageUrl: post.imageUrl,
-                  copy: post.copy,
-                  hashtags: post.hashtags,
-                });
-                toast.success("Publicado en Instagram!");
+          <>
+            <Button
+              onClick={() => setShowPublishDialog(true)}
+              className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 hover:opacity-90 text-white"
+            >
+              <Instagram className="w-4 h-4 mr-2" />
+              Publicar en Instagram
+            </Button>
+            <PostPublishDialog
+              post={{ ...post, image_url: post.imageUrl }}
+              isOpen={showPublishDialog}
+              onClose={() => setShowPublishDialog(false)}
+              onPublished={() => {
+                setShowPublishDialog(false);
                 onApprove();
-              } catch (error) {
-                toast.error(`Error: ${error.message}`);
-              } finally {
-                setPublishing(false);
-              }
-            }}
-            disabled={publishing}
-            className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 hover:opacity-90 text-white"
-          >
-            {publishing ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Publicando...
-              </>
-            ) : (
-              <>
-                <Instagram className="w-4 h-4 mr-2" />
-                Publicar en Instagram
-              </>
-            )}
-          </Button>
+              }}
+            />
+          </>
         )}
       </div>
     </div>
