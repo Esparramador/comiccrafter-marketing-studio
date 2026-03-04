@@ -6,7 +6,7 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { idea_base, tone_label, image_url, mode = 'megaprompt', llms = ['gemini'] } = await req.json();
+    const { idea_base, tone_label, image_url, mode = 'megaprompt', llms = ['gemini'], combo = false } = await req.json();
     if (!idea_base) return Response.json({ error: 'idea_base requerida' }, { status: 400 });
 
     const promptsmithSystem = `Eres PROMPTSMITH, un experto mundial en ingeniería de prompts con dominio absoluto de las técnicas más avanzadas para comunicarse con modelos de lenguaje. Tu misión es transformar la idea del usuario en contenido extraordinario, preciso y altamente efectivo para ComicCrafter.es.
