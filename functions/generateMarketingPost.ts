@@ -99,6 +99,16 @@ async function generatePost(topic, templateKey) {
   const template = TEMPLATES[templateKey];
   if (!template) throw new Error(`Template ${templateKey} no existe`);
 
+  // Sistema mejorado con contexto web
+  const enhancedPrompt = `${template.systemPrompt}
+
+CONTEXTO ESTRATÉGICO INSTAGRAM:
+- Formato: ${template.contentType}
+- Objetivo: ${template.description}
+- SEO: Incluye palabras clave naturales (#ComicIA, #DigitalManga, #ProcesoCreativo, #ComicCrafter)
+- Engagement: Haz que sea visual, emocional, shareable
+- Puente a comiccrafter.es: CTA natural sin ser forzado`;
+
   // Generate copy with OpenAI
   const copyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -109,11 +119,11 @@ async function generatePost(topic, templateKey) {
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [
-        { role: 'system', content: template.systemPrompt },
+        { role: 'system', content: enhancedPrompt },
         { role: 'user', content: `Tema: ${topic}` },
       ],
-      temperature: 0.7,
-      max_tokens: 200,
+      temperature: 0.8,
+      max_tokens: 250,
     }),
   });
 
@@ -121,7 +131,19 @@ async function generatePost(topic, templateKey) {
   const copyData = await copyResponse.json();
   const copy = copyData.choices[0].message.content;
 
-  // Generate hashtags with Gemini
+  // Generate SEO-optimized hashtags with Gemini
+  const hashtagPrompt = template.contentType === 'carousel' 
+    ? `Para un CARRUSEL de cómics sobre "${topic}", genera 8-12 hashtags SEO-optimized: 
+       - 3 hashtags de cómics/manga: #ComicIA #DigitalManga #AkiraToriyamaStyle
+       - 3 de IA creativa: #ComicCrafter #ProcesoCreativo #AIArt
+       - 2-3 específicos del tema: ${topic}`
+    : template.contentType === 'reel'
+    ? `Para un REEL viral sobre "${topic}", genera 10-15 hashtags trending:
+       - 3 principales: #ComicCrafter #ProcesoCreativo #BTS
+       - Resto: hashtags virales del tema + #Reels #ComicIA #TendenciasIA`
+    : `Para un post de Instagram sobre "${topic}" con estrategia de storytelling visual, genera 10-15 hashtags relevantes y SEO-optimized. 
+       Incluye: #ComicIA #ComicCrafter #DigitalManga #ProcesoCreativo + otros específicos del tema "${topic}"`;
+
   const geminiResponse = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -130,12 +152,12 @@ async function generatePost(topic, templateKey) {
         {
           parts: [
             {
-              text: `Para un post de Instagram sobre "${topic}" en el contexto de ComicCrafter (herramienta de IA para crear cómics), genera 15-20 hashtags relevantes. Responde solo con hashtags separados por espacio, sin explicaciones.`,
+              text: hashtagPrompt,
             },
           ],
         },
       ],
-      generationConfig: { temperature: 0.8, maxOutputTokens: 100 },
+      generationConfig: { temperature: 0.7, maxOutputTokens: 150 },
       safetySettings: [
         { category: 'HARM_CATEGORY_UNSPECIFIED', threshold: 'BLOCK_NONE' },
       ],
@@ -154,6 +176,9 @@ async function generatePost(topic, templateKey) {
     copy,
     hashtags,
     imagePrompt,
+    contentType: template.contentType,
+    duration: template.duration,
+    maxImages: template.maxImages,
   };
 }
 
