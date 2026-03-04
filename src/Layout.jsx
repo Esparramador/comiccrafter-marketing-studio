@@ -116,6 +116,15 @@ function LayoutInner({ children, currentPageName }) {
         </nav>
 
         <div className="p-4 border-t border-[var(--border-dim)] space-y-3">
+          <a
+            href="https://comiccrafter.es"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
+          >
+            <Globe className="w-3.5 h-3.5 text-emerald-400" />
+            comiccrafter.es ↗
+          </a>
           <LanguageSwitcher />
           <div className="px-3 py-2 rounded-xl bg-gradient-to-r from-violet-600/10 to-fuchsia-600/10 border border-violet-500/20">
             <p className="text-[11px] text-violet-300 font-medium">ComicCrafter AI</p>

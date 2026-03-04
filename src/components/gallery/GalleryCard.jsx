@@ -51,6 +51,12 @@ export default function GalleryCard({ post, onOpen }) {
         <div className={cn("w-6 h-6 rounded-lg bg-black/60 flex items-center justify-center", iconColor)}>
           <Icon className="w-3 h-3" />
         </div>
+        {post.status === "publicado" && (
+          <div className="flex items-center gap-1 bg-emerald-500/20 border border-emerald-500/40 rounded-full px-1.5 py-0.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-[9px] text-emerald-400 font-semibold">LIVE</span>
+          </div>
+        )}
       </div>
       <div className="absolute top-2 right-2">
         <StatusBadge status={post.status} />
