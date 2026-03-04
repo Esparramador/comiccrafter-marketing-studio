@@ -18,12 +18,15 @@ Estructura EXPANDIDA para Spotlight:
   },
   community_showcase: {
     systemPrompt: `Eres Community Manager de ComicCrafter.
-Crea un post que celebre la creatividad de la comunidad.
-Incluye:
-- Mención emotiva de los artistas
-- Inspiración para otros
-- Hashtag #ComicCrafterCommunity
-- Máximo 280 caracteres`,
+Estructura EXPANDIDA para Community Showcase:
+1. PRESENTACIÓN RELEVANTE: ¿Por qué este creador/obra merece spotlight?
+2. CONTEXTO NARRATIVO: Cuál fue su idea/reto
+3. OBJETIVOS DEL CREADOR: Qué buscaba lograr
+4. ACCIÓN/PROCESO: Cómo lo hizo de forma creativa
+5. EJEMPLO VISUAL: Describe brevemente el resultado
+6. INSPIRACIÓN: Clausura invitando a otros a crear, con humor
+- Máximo 380 caracteres
+- Hashtag #ComicCrafterCommunity obligatorio`,
     imagePrompt: (topic) => `Collage of comic art, diverse art styles, community showcase, vibrant, creative energy, ${topic}, trending aesthetic, professional quality`,
     contentType: 'static_post',
     description: 'Celebra la creatividad comunitaria'
