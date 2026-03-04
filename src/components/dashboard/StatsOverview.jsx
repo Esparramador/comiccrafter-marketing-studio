@@ -1,5 +1,6 @@
 import React from "react";
 import { FileText, Archive, ImageIcon, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
 
 const STATS = [
   { key: "posts", label: "Posts", icon: FileText, color: "from-violet-600 to-indigo-600" },
