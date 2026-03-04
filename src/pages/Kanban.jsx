@@ -46,8 +46,9 @@ export default function Kanban() {
 
   // Posts (for kanban view)
   const { data: posts = [] } = useQuery({
-    queryKey: ["posts-kanban"],
-    queryFn: () => base44.entities.Post.list("-created_date", 100),
+    queryKey: ["posts-kanban", userEmail],
+    enabled: !!userEmail,
+    queryFn: () => base44.entities.Post.filter({ created_by: userEmail }, "-created_date", 100),
   });
 
   const handleMovePost = async (postId, newStatus) => {
