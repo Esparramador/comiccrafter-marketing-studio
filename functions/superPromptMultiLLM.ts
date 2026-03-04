@@ -137,14 +137,11 @@ FORMATO DE SALIDA:
       const mistralBase = await callMistral(finalPrompt, true);
       results.mistral = mistralBase;
     } else if (mode === 'megaprompt') {
-      // Megaprompt: una sola pasada con sistema PROMPTSMITH completo
+      // Megaprompt: una sola pasada con sistema PROMPTSMITH completo usando Mistral gratuito
       const finalPrompt = `${promptsmithSystem}\n\nIDEA_DEL_USUARIO: ${idea_base}`;
 
-      const promises = [];
-      if (llms.includes('gemini')) promises.push(callGemini(finalPrompt, true).then(r => { results.gemini = r; }));
-      if (llms.includes('openai')) promises.push(callOpenAI(finalPrompt, true).then(r => { results.openai = r; }));
-
-      await Promise.all(promises);
+      const mistralResult = await callMistral(finalPrompt, true);
+      results.mistral = mistralResult;
     } else if (mode === 'sequential') {
       // Prompts secuenciales: 4 pasos, acumulativos
       const step1 = `${promptsmithSystem}\n\nPASO 1 - INTRODUCTION:\nGenera una introducción impactante y gancho para: "${idea_base}"\nResponde solo con el intro, máx 2-3 párrafos, tono épico o divertido según corresponda.\nResponde como texto plano, sin JSON.`;
