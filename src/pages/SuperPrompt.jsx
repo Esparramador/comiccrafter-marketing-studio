@@ -77,6 +77,8 @@ export default function SuperPrompt() {
   const [tone, setTone] = useState("epic_es");
   const [generating, setGenerating] = useState(false);
   const [outputs, setOutputs] = useState({ instagram_copy: "", luma_prompt: "", elevenlabs_script: "" });
+  const [mode, setMode] = useState("megaprompt"); // megaprompt or sequential
+  const [selectedLLMs, setSelectedLLMs] = useState(["gemini"]); // array of selected LLMs
   const { t } = useI18n();
 
   const queryClient = useQueryClient();
