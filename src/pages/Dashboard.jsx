@@ -32,12 +32,10 @@ export default function Dashboard() {
           setUserEmail(user.email);
         } else {
           setIsAuthed(false);
-          base44.auth.redirectToLogin();
         }
       })
       .catch(() => {
         setIsAuthed(false);
-        base44.auth.redirectToLogin();
       });
   }, []);
 
