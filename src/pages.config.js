@@ -56,9 +56,9 @@ import MarketingStudio from './pages/MarketingStudio';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import SuperPrompt from './pages/SuperPrompt';
+import TextEnhancer from './pages/TextEnhancer';
 import Vault from './pages/Vault';
 import Viewer from './pages/Viewer';
-import TextEnhancer from './pages/TextEnhancer';
 import __Layout from './Layout.jsx';
 
 
@@ -72,9 +72,9 @@ export const PAGES = {
     "Profile": Profile,
     "Settings": Settings,
     "SuperPrompt": SuperPrompt,
+    "TextEnhancer": TextEnhancer,
     "Vault": Vault,
     "Viewer": Viewer,
-    "TextEnhancer": TextEnhancer,
 }
 
 export const pagesConfig = {
