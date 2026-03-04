@@ -19,10 +19,15 @@ const BG_IMAGES = [
 ];
 
 export default function Dashboard() {
+  const [isAuthed, setIsAuthed] = React.useState(null);
+
   React.useEffect(() => {
-    base44.auth.me()
-      .then((u) => { if (!u) base44.auth.redirectToLogin(); })
-      .catch(() => base44.auth.redirectToLogin());
+    base44.auth.isAuthenticated()
+      .then((authed) => {
+        if (!authed) base44.auth.redirectToLogin("/dashboard");
+        setIsAuthed(authed);
+      })
+      .catch(() => base44.auth.redirectToLogin("/dashboard"));
   }, []);
 
   const [bgIndex, setBgIndex] = React.useState(0);
