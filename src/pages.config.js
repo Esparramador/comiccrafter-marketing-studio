@@ -54,6 +54,7 @@ import SuperPrompt from './pages/SuperPrompt';
 import Vault from './pages/Vault';
 import Viewer from './pages/Viewer';
 import Admin from './pages/Admin';
+import Gallery from './pages/Gallery';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +66,7 @@ export const PAGES = {
     "Vault": Vault,
     "Viewer": Viewer,
     "Admin": Admin,
+    "Gallery": Gallery,
 }
 
 export const pagesConfig = {
