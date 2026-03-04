@@ -33,6 +33,22 @@ export default function MarketingStudio() {
     queryFn: () => base44.entities.MarketingPost.filter({ created_by: userEmail }, "-created_date", 50),
   });
 
+  const handleReferenceUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingRef(true);
+    try {
+      const res = await base44.integrations.Core.UploadFile({ file });
+      setReferenceImage(res.file_url);
+      toast.success("Imagen de referencia cargada");
+    } catch (error) {
+      toast.error("Error al cargar imagen");
+    } finally {
+      setUploadingRef(false);
+    }
+  };
+
   const handleGenerate = async () => {
     if (!topic.trim()) {
       toast.error("Describe el tema del post");
@@ -44,6 +60,7 @@ export default function MarketingStudio() {
       const res = await base44.functions.invoke("generateMarketingPost", {
         topic: topic.trim(),
         template: selectedTemplate,
+        reference_image_url: referenceImage,
       });
 
       setCurrentPost(res.data);
