@@ -79,10 +79,10 @@ export default function SuperPrompt() {
     setGenerating(true);
     setOutputs({ instagram_copy: "", luma_prompt: "", elevenlabs_script: "" });
 
-    const userPrompt = `Idea base: ${ideaBase}${imageUrl ? `\nImagen de referencia disponible.` : ""}`;
+    const userPrompt = `IDEA_DEL_USUARIO: ${ideaBase}${imageUrl ? `\n(Imagen de referencia adjunta)` : ""}`;
 
     const invokeParams = {
-      prompt: userPrompt,
+      prompt: buildSystemPrompt(tone) + "\n\n" + userPrompt,
       response_json_schema: {
         type: "object",
         properties: {
@@ -96,9 +96,6 @@ export default function SuperPrompt() {
     if (imageUrl) {
       invokeParams.file_urls = [imageUrl];
     }
-
-    // Prepend system prompt
-    invokeParams.prompt = SYSTEM_PROMPT + "\n\n" + userPrompt;
 
     const res = await base44.integrations.Core.InvokeLLM(invokeParams);
     setOutputs({
