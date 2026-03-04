@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Settings, Key, Instagram, Save, Loader2, Eye, EyeOff, Bell } from "lucide-react";
+import { Settings as SettingsIcon, Key, Instagram, Save, Loader2, Eye, EyeOff, Bell } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader";
 import { toast } from "sonner";
 
@@ -84,7 +84,7 @@ export default function Settings() {
       <SectionHeader
         title="Configuración"
         subtitle="Gestiona tu cuenta y preferencias"
-        icon={Settings}
+        icon={SettingsIcon}
       />
 
       <form onSubmit={handleSubmit} className="space-y-6">
