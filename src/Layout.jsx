@@ -9,11 +9,9 @@ import {
   Calendar,
   Archive,
   Menu,
-  Zap
+  Zap,
+  Shield
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { I18nProvider, useI18n } from "@/components/i18n/I18nContext";
-import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 
 const NAV_KEYS = [
   { key: "nav_dashboard", page: "Dashboard", icon: LayoutDashboard },
@@ -22,6 +20,7 @@ const NAV_KEYS = [
   { key: "nav_viewer", page: "Viewer", icon: Eye },
   { key: "nav_kanban", page: "Kanban", icon: Calendar },
   { key: "nav_vault", page: "Vault", icon: Archive },
+  { key: "nav_admin", page: "Admin", icon: Shield },
 ];
 
 function Layout({ children, currentPageName }) {
