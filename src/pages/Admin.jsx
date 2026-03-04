@@ -226,13 +226,13 @@ export default function Admin() {
   );
 
   const ADMIN_EMAIL = "sadiagiljoan@gmail.com";
-  const isAdmin = user && (user.role === "admin" || user.email === ADMIN_EMAIL);
+  const isAdmin = user?.email === ADMIN_EMAIL || user?.role === "admin";
 
   if (!isAdmin) return (
     <div className="flex flex-col items-center justify-center h-64 gap-3">
       <Shield className="w-12 h-12 text-red-400" />
-      <p className="text-gray-400 text-sm font-medium">Acceso denegado</p>
-      <p className="text-gray-600 text-xs">Esta sección es exclusiva para administradores.</p>
+      <p className="text-red-400 text-base font-bold">403 — Acceso Denegado</p>
+      <p className="text-gray-500 text-xs">Esta sección es exclusiva para el administrador del sistema.</p>
     </div>
   );
 
