@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
-import { Sparkles, Users, Zap } from "lucide-react";
+import { Sparkles, Users, Zap, BookOpen, Film, MessageCircle, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TEMPLATES = [
@@ -24,6 +24,34 @@ const TEMPLATES = [
     icon: Zap,
     description: "Explica la tecnología",
     color: "from-cyan-500 to-blue-600",
+  },
+  {
+    id: "carousel_comic",
+    label: "Carrusel de Cómics",
+    icon: BookOpen,
+    description: "Storytelling visual con viñetas",
+    color: "from-orange-500 to-red-600",
+  },
+  {
+    id: "reel_creative_process",
+    label: "Reel Proceso Creativo",
+    icon: Film,
+    description: "Video viral 15-20s",
+    color: "from-red-500 to-pink-600",
+  },
+  {
+    id: "story_interactive",
+    label: "Story Interactiva",
+    icon: MessageCircle,
+    description: "Engagement con polls y preguntas",
+    color: "from-emerald-500 to-teal-600",
+  },
+  {
+    id: "arc_summary",
+    label: "Resumen de Arco",
+    icon: TrendingUp,
+    description: "Recap narrativo con momentum",
+    color: "from-amber-500 to-orange-600",
   },
 ];
 
