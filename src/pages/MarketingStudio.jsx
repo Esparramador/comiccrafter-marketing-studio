@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import SectionHeader from "@/components/shared/SectionHeader";
@@ -16,6 +16,8 @@ export default function MarketingStudio() {
   const [generating, setGenerating] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
+  const [referenceImage, setReferenceImage] = useState(null);
+  const [uploadingRef, setUploadingRef] = useState(false);
 
   React.useEffect(() => {
     base44.auth.me().then((u) => {
