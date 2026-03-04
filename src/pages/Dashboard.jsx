@@ -40,19 +40,27 @@ export default function Dashboard() {
   }, []);
   const queryClient = useQueryClient();
 
+  const [userEmail, setUserEmail] = React.useState(null);
+  React.useEffect(() => {
+    base44.auth.me().then((u) => setUserEmail(u?.email || null));
+  }, []);
+
   const { data: posts = [], isLoading: postsLoading } = useQuery({
-    queryKey: ["posts"],
-    queryFn: () => base44.entities.Post.list("-created_date", 10),
+    queryKey: ["posts", userEmail],
+    enabled: !!userEmail,
+    queryFn: () => base44.entities.Post.filter({ created_by: userEmail }, "-created_date", 10),
   });
 
   const { data: assets = [], isLoading: assetsLoading } = useQuery({
-    queryKey: ["assets"],
-    queryFn: () => base44.entities.Asset.list("-created_date", 20),
+    queryKey: ["assets", userEmail],
+    enabled: !!userEmail,
+    queryFn: () => base44.entities.Asset.filter({ created_by: userEmail }, "-created_date", 20),
   });
 
   const { data: prompts = [] } = useQuery({
-    queryKey: ["prompts-count"],
-    queryFn: () => base44.entities.PromptsVault.list("-created_date", 100),
+    queryKey: ["prompts-count", userEmail],
+    enabled: !!userEmail,
+    queryFn: () => base44.entities.PromptsVault.filter({ created_by: userEmail }, "-created_date", 100),
   });
 
   const counts = {
