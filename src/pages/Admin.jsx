@@ -225,10 +225,14 @@ export default function Admin() {
     </div>
   );
 
-  if (!user || user.role !== "admin") return (
+  const ADMIN_EMAIL = "sadiagiljoan@gmail.com";
+  const isAdmin = user && (user.role === "admin" || user.email === ADMIN_EMAIL);
+
+  if (!isAdmin) return (
     <div className="flex flex-col items-center justify-center h-64 gap-3">
       <Shield className="w-12 h-12 text-red-400" />
-      <p className="text-gray-400 text-sm">Acceso restringido — Solo administradores</p>
+      <p className="text-gray-400 text-sm font-medium">Acceso denegado</p>
+      <p className="text-gray-600 text-xs">Esta sección es exclusiva para administradores.</p>
     </div>
   );
 

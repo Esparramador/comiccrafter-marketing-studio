@@ -36,9 +36,16 @@ function Layout({ children, currentPageName }) {
   );
 }
 
+const ADMIN_EMAIL = "sadiagiljoan@gmail.com";
+
 function LayoutInner({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userEmail, setUserEmail] = useState(null);
   const { t } = useI18n();
+
+  React.useEffect(() => {
+    base44.auth.me().then((u) => setUserEmail(u?.email || "")).catch(() => setUserEmail(""));
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white flex">
