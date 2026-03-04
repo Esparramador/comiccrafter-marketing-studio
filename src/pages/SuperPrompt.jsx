@@ -8,17 +8,32 @@ import { Sparkles, Loader2, Instagram, Film, Mic, ImageIcon } from "lucide-react
 import SectionHeader from "@/components/shared/SectionHeader";
 import GlassCard from "@/components/shared/GlassCard";
 import PromptOutput from "@/components/prompt/PromptOutput";
+import { useI18n } from "@/components/i18n/I18nContext";
 import { toast } from "sonner";
 
-const SYSTEM_PROMPT = `Eres un experto en Marketing de IA y Prompt Engineering para 'ComicCrafter'. Tu tarea es tomar la idea del usuario y devolver ÚNICAMENTE un objeto JSON válido con estas tres claves exactas:
+const TONE_OPTIONS = [
+  { value: "epic_es", label: "🇪🇸 Español — Épico / Friki", instagramLang: "español de España", voiceLang: "español", style: "épico, apasionado, friki, con referencias a cultura pop y cómics" },
+  { value: "fun_es", label: "🇪🇸 Español — Humor / Divertido", instagramLang: "español de España", voiceLang: "español", style: "divertido, gracioso, informal, con humor y memes" },
+  { value: "global_en", label: "🇬🇧 English — Global", instagramLang: "English", voiceLang: "English", style: "professional, engaging, global audience" },
+];
 
-- instagram_copy: Texto persuasivo para Instagram con emojis relevantes al principio y al final, hashtags incluyendo siempre #ComicCrafterAI. Máximo 2200 caracteres. Debe ser enganchante y con CTA.
+function buildSystemPrompt(tone) {
+  const t = TONE_OPTIONS.find((o) => o.value === tone) || TONE_OPTIONS[0];
+  return `Actúa como el Director de Marketing de 'ComicCrafter.es', una plataforma española de cómics con IA.
+Tu tarea es recibir la IDEA_DEL_USUARIO y generar ÚNICAMENTE un objeto JSON válido con 3 claves.
 
-- luma_prompt: Prompt técnico EN INGLÉS para Luma Dream Machine. Incluye: estilo visual detallado, movimientos de cámara específicos (dolly, pan, zoom, etc.), tipo de render (cinematic, photorealistic, stylized), iluminación, paleta de colores, duración aproximada (ej: 5-10 seconds). Formato profesional.
+TONO SELECCIONADO: ${t.label} — Estilo: ${t.style}
 
-- elevenlabs_script: Guion narrativo breve en español para voz. Optimizado para narración: incluye pausas naturales (con "..."), tono emocional, ritmo pausado. Máximo 500 caracteres. Debe contar una micro-historia que conecte emocionalmente.
+REGLAS ESTRICTAS DE IDIOMA Y FORMATO:
 
-NO devuelvas NINGÚN otro texto fuera del JSON. Solo el objeto JSON.`;
+"instagram_copy": Redacta el copy para Instagram en ${t.instagramLang}. Debe ser persuasivo, incluir emojis relevantes y hashtags (#ComicCrafterAI #ComicsPersonalizados). Máximo 2200 caracteres. Con CTA al final.
+
+"luma_prompt": ⚠️ ESCRÍBELO SIEMPRE EN INGLÉS, sin excepciones. Los motores de vídeo requieren inglés para máxima precisión. Debe ser muy descriptivo y técnico: movimientos de cámara (dolly, pan, zoom), iluminación, estilo de render (cinematic, comic book style, hyper-realistic), paleta de colores y duración estimada.
+
+"elevenlabs_script": Redacta un guion muy corto (máx 15 segundos, ~150 palabras) en ${t.voiceLang}. Pensado para ser leído por una IA de voz: usa puntuación clara para marcar pausas (...), ritmo natural y emoción.
+
+Devuelve SOLO el código JSON, sin markdown ni explicaciones.`;
+}
 
 export default function SuperPrompt() {
   const urlParams = new URLSearchParams(window.location.search);
