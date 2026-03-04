@@ -15,7 +15,8 @@ import {
   Menu,
   Zap,
   Shield,
-  GalleryHorizontalEnd
+  GalleryHorizontalEnd,
+  Globe
 } from "lucide-react";
 
 const NAV_KEYS = [

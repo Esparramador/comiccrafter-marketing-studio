@@ -13,8 +13,25 @@ export default function StudioModal({ post, onClose, onUpdated }) {
   const [copy, setCopy] = useState(post.instagram_copy || "");
   const [script, setScript] = useState(post.elevenlabs_script || "");
   const [saving, setSaving] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [regenStep, setRegenStep] = useState(""); // "gemini" | "huggingface" | "verify" | ""
+
+  const handlePublishToWeb = async () => {
+    setPublishing(true);
+    await base44.functions.invoke("makeWebhook", {
+      event: "publish_to_web",
+      post_id: post.id,
+      title: title,
+      file_url: post.media_url,
+      instagram_copy: copy,
+      status: "published",
+    });
+    await base44.entities.Post.update(post.id, { status: "publicado" });
+    toast.success("¡Publicado en comiccrafter.es! 🌐");
+    onUpdated();
+    setPublishing(false);
+  };
 
   const handleSave = async () => {
     setSaving(true);
