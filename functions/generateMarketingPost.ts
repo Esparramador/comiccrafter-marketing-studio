@@ -158,10 +158,11 @@ Deno.serve(async (req) => {
     // Generate post content
     const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, templateKey);
 
-    // Generate image con Replicate Flux Pro (rápido y de alta calidad)
+    // Generate image con Stable Diffusion XL (funciona en Replicate)
     let imageUrl = null;
     
     try {
+      // Usar Stability's SDXL que está disponible y funciona bien
       const replicateRes = await fetch('https://api.replicate.com/v1/predictions', {
         method: 'POST',
         headers: {
@@ -169,58 +170,43 @@ Deno.serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          version: 'da3f75e0be5c88c7f76b13c1a9b04bfcfc1f98ee1c6f5fe4ceb65a01e3cb8e73',
+          version: '8beff3369e81422112d93b89ca01426147de542cd4684c43b0427293f88518e47',
           input: {
             prompt: imagePrompt,
-            num_outputs: 1,
-            aspect_ratio: '1:1',
+            negative_prompt: 'text, watermark, low quality, blurry',
+            num_inference_steps: 50,
+            guidance_scale: 7.5,
           },
         }),
       });
 
       if (replicateRes.ok) {
         const replicateData = await replicateRes.json();
-        
         let prediction = replicateData;
-        let maxWait = 180; // Esperar máximo 3 minutos
-        let waited = 0;
         
-        while (prediction.status === 'processing' && waited < maxWait) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
-          waited += 2;
+        // Poll hasta 60 segundos
+        let attempts = 0;
+        while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && attempts < 60) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
           
           const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
             headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
           });
           
-          if (checkRes.ok) {
-            prediction = await checkRes.json();
-            console.log(`[Image Gen] Status: ${prediction.status}, waited: ${waited}s`);
-          }
+          prediction = await checkRes.json();
+          attempts++;
         }
 
         if (prediction.status === 'succeeded' && prediction.output) {
           imageUrl = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
-          console.log(`[Image Gen] Success - Image URL: ${imageUrl}`);
-        } else {
-          console.log(`[Image Gen] Final status: ${prediction.status}`);
         }
       }
     } catch (imgError) {
-      console.error('Image generation error:', imgError.message);
+      console.error('[Image Gen] Error:', imgError.message);
     }
     
-    // Si falla Replicate, intentar LLM para generar prompt alterno
+    // Fallback solo si falla todo
     if (!imageUrl) {
-      try {
-        const fallbackRes = await base44.integrations.Core.InvokeLLM({
-          prompt: `Generate a realistic comic book scene description based on: ${imagePrompt}`,
-          add_context_from_internet: false
-        });
-        console.log('[Image Gen] Using LLM fallback description');
-      } catch (e) {
-        console.error('Fallback failed:', e.message);
-      }
       imageUrl = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop';
     }
 
