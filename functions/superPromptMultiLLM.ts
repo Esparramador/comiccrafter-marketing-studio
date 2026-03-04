@@ -80,38 +80,49 @@ CAMPO 3: elevenlabs_script
 FORMATO DE SALIDA:
 {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`;
 
-    // Función para llamar a Gemini (con contexto web integrado)
-    const callGemini = async (systemMsg, includeWeb = false) => {
-      const parts = [{ text: systemMsg }];
-      if (image_url) {
-        try {
-          const imgRes = await fetch(image_url);
-          const imgBuffer = await imgRes.arrayBuffer();
-          const base64 = btoa(String.fromCharCode(...new Uint8Array(imgBuffer)));
-          const mimeType = imgRes.headers.get('content-type') || 'image/jpeg';
-          parts.push({ inline_data: { mime_type: mimeType, data: base64 } });
-        } catch (_) {}
-      }
-      // Añadir contexto web si es necesario
-      if (includeWeb && webContext) {
-        parts.unshift({ text: `CONTEXTO WEB VERIFICADO:\n${webContext}\n\n---\n` });
+    // Función para llamar a Mistral (LLM gratuito en Replicate)
+    const callMistral = async (systemMsg, includeWeb = false) => {
+      const msgContent = includeWeb && webContext 
+        ? `CONTEXTO WEB:\n${webContext}\n\n---\n\n${systemMsg}`
+        : systemMsg;
+
+      const mistralRes = await fetch('https://api.replicate.com/v1/predictions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          version: '7b2bfc3d12db033606914fe6c1eae632d331b45e224a3749ecd54d5d859361c5',
+          input: {
+            prompt: msgContent,
+            temperature: 0.8,
+            top_p: 0.95,
+            max_tokens: 2048
+          }
+        })
+      });
+
+      if (!mistralRes.ok) throw new Error('Mistral API error');
+      const data = await mistralRes.json();
+      let prediction = data;
+      
+      while (prediction.status !== 'succeeded' && prediction.status !== 'failed') {
+        await new Promise(r => setTimeout(r, 500));
+        const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
+          headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
+        });
+        prediction = await checkRes.json();
       }
 
-      const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${Deno.env.get('GEMINI_API_KEY')}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ role: 'user', parts }],
-            generationConfig: { responseMimeType: 'application/json', temperature: 0.8 }
-          })
-        }
-      );
-      const data = await geminiRes.json();
-      if (!geminiRes.ok) throw new Error(data.error?.message || 'Gemini error');
-      const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
-      return JSON.parse(raw);
+      if (prediction.status !== 'succeeded') throw new Error('Mistral generation failed');
+      
+      const rawText = Array.isArray(prediction.output) ? prediction.output.join('') : (prediction.output || '{}');
+      try {
+        return JSON.parse(rawText);
+      } catch {
+        return { instagram_copy: rawText, luma_prompt: '', elevenlabs_script: '' };
+      }
     };
 
     // Función para llamar a OpenAI (ChatGPT)
