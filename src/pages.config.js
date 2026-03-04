@@ -53,11 +53,11 @@ import Gallery from './pages/Gallery';
 import Kanban from './pages/Kanban';
 import LabAI from './pages/LabAI';
 import MarketingStudio from './pages/MarketingStudio';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
 import SuperPrompt from './pages/SuperPrompt';
 import Vault from './pages/Vault';
 import Viewer from './pages/Viewer';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
 import __Layout from './Layout.jsx';
 
 
@@ -68,11 +68,11 @@ export const PAGES = {
     "Kanban": Kanban,
     "LabAI": LabAI,
     "MarketingStudio": MarketingStudio,
+    "Profile": Profile,
+    "Settings": Settings,
     "SuperPrompt": SuperPrompt,
     "Vault": Vault,
     "Viewer": Viewer,
-    "Profile": Profile,
-    "Settings": Settings,
 }
 
 export const pagesConfig = {
