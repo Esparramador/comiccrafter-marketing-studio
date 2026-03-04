@@ -130,24 +130,26 @@ export default function SuperPrompt() {
     toast.success("Imagen de referencia cargada");
   };
 
+  const toneLabel = TONE_OPTIONS.find((o) => o.value === tone)?.label || "";
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <SectionHeader
-        title="Motor Súper Prompt"
-        subtitle="Genera copy para Instagram, prompts para Luma y guiones para ElevenLabs"
+        title={t("sp_title")}
+        subtitle={t("sp_subtitle")}
         icon={Sparkles}
       />
 
       <GlassCard className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-3">
-            <label className="text-xs text-gray-500 font-medium">Post existente (opcional)</label>
+            <label className="text-xs text-gray-500 font-medium">{t("sp_existing_post")}</label>
             <Select value={selectedPostId} onValueChange={setSelectedPostId}>
               <SelectTrigger className="bg-[var(--surface)] border-[var(--border-dim)] text-white">
-                <SelectValue placeholder="Seleccionar post..." />
+                <SelectValue placeholder={t("sp_select_post")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">— Nuevo (sin post) —</SelectItem>
+                <SelectItem value="none">{t("sp_new_post")}</SelectItem>
                 {posts.map((p) => (
                   <SelectItem key={p.id} value={p.id}>
                     {p.title || p.idea_base?.substring(0, 50)}
@@ -156,24 +158,44 @@ export default function SuperPrompt() {
               </SelectContent>
             </Select>
 
-            <label className="text-xs text-gray-500 font-medium">Imagen de referencia</label>
+            <label className="text-xs text-gray-500 font-medium">{t("sp_tone")}</label>
+            <Select value={tone} onValueChange={setTone}>
+              <SelectTrigger className="bg-[var(--surface)] border-[var(--border-dim)] text-white">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="epic_es">{t("sp_tone_epic_es")}</SelectItem>
+                <SelectItem value="fun_es">{t("sp_tone_fun_es")}</SelectItem>
+                <SelectItem value="global_en">{t("sp_tone_en")}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <label className="text-xs text-gray-500 font-medium">{t("sp_ref_image")}</label>
             <label className="flex items-center gap-2 px-4 py-3 rounded-xl bg-white/5 border border-dashed border-[var(--border-dim)] hover:border-violet-500/50 cursor-pointer transition-colors">
               <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
               <ImageIcon className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-400">{imageUrl ? "Imagen cargada ✓" : "Subir imagen (opcional)"}</span>
+              <span className="text-sm text-gray-400">{imageUrl ? t("sp_image_loaded") : t("sp_upload_image")}</span>
             </label>
           </div>
 
           <div className="space-y-3">
-            <label className="text-xs text-gray-500 font-medium">Idea base</label>
+            <label className="text-xs text-gray-500 font-medium">{t("sp_idea")}</label>
             <Textarea
               value={ideaBase}
               onChange={(e) => setIdeaBase(e.target.value)}
-              placeholder="Ej: Un cómic sobre un robot artista que descubre el color por primera vez, orientado a creadores de contenido en Instagram"
-              rows={5}
+              placeholder={t("sp_idea_placeholder")}
+              rows={7}
               className="bg-[var(--surface)] border-[var(--border-dim)] text-white placeholder:text-gray-600 resize-none"
             />
           </div>
+        </div>
+
+        {/* Tone indicator */}
+        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-amber-500/5 border border-amber-500/10">
+          <span className="text-xs text-amber-400">⚠️</span>
+          <p className="text-xs text-amber-300/80">
+            <strong>Luma prompt</strong> siempre en inglés para máxima calidad. Copy e Voz: <strong>{toneLabel}</strong>
+          </p>
         </div>
 
         <Button
@@ -184,12 +206,12 @@ export default function SuperPrompt() {
           {generating ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin mr-2" />
-              Generando Magia...
+              {t("sp_generating")}
             </>
           ) : (
             <>
               <Sparkles className="w-5 h-5 mr-2" />
-              Generar Magia ✨
+              {t("sp_generate")}
             </>
           )}
         </Button>
@@ -197,7 +219,7 @@ export default function SuperPrompt() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <PromptOutput
-          label="Copy Instagram"
+          label={t("sp_copy_instagram")}
           icon={Instagram}
           content={outputs.instagram_copy}
           tipo="instagram"
@@ -205,7 +227,7 @@ export default function SuperPrompt() {
           accentColor="fuchsia"
         />
         <PromptOutput
-          label="Prompt Luma (Vídeo)"
+          label={t("sp_luma_prompt")}
           icon={Film}
           content={outputs.luma_prompt}
           tipo="luma"
@@ -213,7 +235,7 @@ export default function SuperPrompt() {
           accentColor="cyan"
         />
         <PromptOutput
-          label="Guion ElevenLabs (Voz)"
+          label={t("sp_elevenlabs")}
           icon={Mic}
           content={outputs.elevenlabs_script}
           tipo="elevenlabs"
