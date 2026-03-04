@@ -117,7 +117,11 @@ export default function TextEnhancer() {
           yOffset = 20;
         }
         
-        doc.setTextColor(msg.role === "user" ? 102, 51, 153 : 50, 50, 50);
+        if (msg.role === "user") {
+          doc.setTextColor(102, 51, 153);
+        } else {
+          doc.setTextColor(50, 50, 50);
+        }
         doc.text(text, 20, yOffset);
         yOffset += text.length * 5 + 5;
       });
