@@ -200,7 +200,7 @@ Deno.serve(async (req) => {
     // Save to database
     const post = await base44.entities.MarketingPost.create({
       topic,
-      template,
+      template: templateKey,
       instagram_copy: copy,
       hashtags,
       image_url: imageUrl,
