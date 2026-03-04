@@ -175,8 +175,9 @@ Deno.serve(async (req) => {
     });
 
     if (!replicateRes.ok) {
-      const errorData = await replicateRes.json();
-      throw new Error(`Replicate API error: ${errorData.error || replicateRes.statusText}`);
+      const errorText = await replicateRes.text();
+      console.error('Replicate Error:', errorText);
+      throw new Error(`Replicate API error: ${errorText}`);
     }
 
     const replicateData = await replicateRes.json();
