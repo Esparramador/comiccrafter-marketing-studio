@@ -141,7 +141,7 @@ FORMATO DE SALIDA:
 
     const results = {};
 
-    if (combo && llms.includes('gemini') && llms.includes('openai')) {
+    if (llms.includes('gemini') && llms.includes('openai') && mode === 'combo') {
       // MODO COMPLEMENTARIO: Gemini genera → ChatGPT refina/complementa (CON CONTEXTO WEB)
       const finalPrompt = `${promptsmithSystem}\n\nIDEA_DEL_USUARIO: ${idea_base}`;
 
