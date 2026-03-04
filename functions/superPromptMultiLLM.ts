@@ -80,48 +80,52 @@ CAMPO 3: elevenlabs_script
 FORMATO DE SALIDA:
 {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`;
 
-    // Función para llamar a Mistral (LLM gratuito en Replicate)
+    // Función para llamar a Meta Llama 2 (LLM gratuito en Replicate)
     const callMistral = async (systemMsg, includeWeb = false) => {
       const msgContent = includeWeb && webContext 
         ? `CONTEXTO WEB:\n${webContext}\n\n---\n\n${systemMsg}`
         : systemMsg;
 
-      const mistralRes = await fetch('https://api.replicate.com/v1/predictions', {
+      const llamaRes = await fetch('https://api.replicate.com/v1/predictions', {
         method: 'POST',
         headers: {
           'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          version: '7b2bfc3d12db033606914fe6c1eae632d331b45e224a3749ecd54d5d859361c5',
+          version: '02e509c789964a7ea8526989e4618712Model-70bLlama2-70b-chat-hf',
           input: {
             prompt: msgContent,
             temperature: 0.8,
             top_p: 0.95,
-            max_tokens: 2048
+            max_tokens: 2048,
+            repetition_penalty: 1.0
           }
         })
       });
 
-      if (!mistralRes.ok) throw new Error('Mistral API error');
-      const data = await mistralRes.json();
+      if (!llamaRes.ok) throw new Error('LLM API error');
+      const data = await llamaRes.json();
       let prediction = data;
       
-      while (prediction.status !== 'succeeded' && prediction.status !== 'failed') {
-        await new Promise(r => setTimeout(r, 500));
+      let attempts = 0;
+      while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && attempts < 60) {
+        await new Promise(r => setTimeout(r, 1000));
         const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
           headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
         });
         prediction = await checkRes.json();
+        attempts++;
       }
 
-      if (prediction.status !== 'succeeded') throw new Error('Mistral generation failed');
+      if (prediction.status !== 'succeeded') throw new Error('LLM generation timeout');
       
       const rawText = Array.isArray(prediction.output) ? prediction.output.join('') : (prediction.output || '{}');
       try {
-        return JSON.parse(rawText);
+        const parsed = JSON.parse(rawText);
+        return parsed;
       } catch {
-        return { instagram_copy: rawText, luma_prompt: '', elevenlabs_script: '' };
+        return { instagram_copy: rawText.substring(0, 300), luma_prompt: rawText.substring(0, 500), elevenlabs_script: rawText.substring(0, 150) };
       }
     };
 
