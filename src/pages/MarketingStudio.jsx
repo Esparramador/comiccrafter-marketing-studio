@@ -59,11 +59,11 @@ export default function MarketingStudio() {
     try {
       await base44.entities.MarketingPost.update(currentPost.id, { status: "approved" });
       queryClient.invalidateQueries({ queryKey: ["marketing-posts"] });
-      toast.success("Post aprobado. Listo para publicar en Instagram");
+      toast.success("Post publicado en Instagram");
       setCurrentPost(null);
       setTopic("");
     } catch (error) {
-      toast.error("Error al aprobar");
+      toast.error("Error al publicar");
     }
   };
 
