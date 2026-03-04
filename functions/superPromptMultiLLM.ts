@@ -143,50 +143,27 @@ FORMATO DE SALIDA:
       const mistralResult = await callMistral(finalPrompt, true);
       results.mistral = mistralResult;
     } else if (mode === 'sequential') {
-      // Prompts secuenciales: 4 pasos, acumulativos
-      const step1 = `${promptsmithSystem}\n\nPASO 1 - INTRODUCTION:\nGenera una introducción impactante y gancho para: "${idea_base}"\nResponde solo con el intro, máx 2-3 párrafos, tono épico o divertido según corresponda.\nResponde como texto plano, sin JSON.`;
+      // Prompts secuenciales: 4 pasos acumulativos con Mistral gratuito
+      const step1 = `${promptsmithSystem}\n\nPASO 1 - INTRODUCTION:\nGenera una introducción impactante y gancho para: "${idea_base}"\nResponde solo con el intro, máx 2-3 párrafos, tono épico o divertido según corresponda.\nResponde como JSON: {"intro":"..."}`;
 
-      const step2Prefix = `${promptsmithSystem}\n\nPASO 2 - INSTAGRAM COPY (CONTINUACIÓN):\nTomando como base la introducción anterior, ahora expande el copy para Instagram.\nDebes incluir: emojis relevantes, 3+ hashtags, CTA.\nResponde solo el instagram_copy completo y refinado.\nResponde como texto plano, sin JSON.`;
+      const step2Prefix = `${promptsmithSystem}\n\nPASO 2 - INSTAGRAM COPY:\nExpande el copy para Instagram con emojis, hashtags y CTA fuertes.\nResponde como JSON: {"instagram_copy":"..."}`;
 
-      const step3Prefix = `${promptsmithSystem}\n\nPASO 3 - LUMA PROMPT (VISUAL DETALLADO):\nAhora crea un luma_prompt técnico en inglés basado en: "${idea_base}"\nDescribe personajes, entorno, estilo visual, movimientos de cámara, iluminación.\nUna sola cadena continua, sin saltos de línea.\nResponde como texto plano, sin JSON.`;
+      const step3Prefix = `${promptsmithSystem}\n\nPASO 3 - LUMA PROMPT:\nCrea un prompt técnico en inglés con detalles visuales, movimientos de cámara, iluminación.\nResponde como JSON: {"luma_prompt":"..."}`;
 
-      const step4Prefix = `${promptsmithSystem}\n\nPASO 4 - ELEVENLABS SCRIPT (NARRACIÓN):\nAhora crea el guion de voz para la escena anterior.\nMáx 15 segundos (~150 caracteres), puntuación clara, tono épico/divertido.\nResponde solo el elevenlabs_script.\nResponde como texto plano, sin JSON.`;
+      const step4Prefix = `${promptsmithSystem}\n\nPASO 4 - ELEVENLABS SCRIPT:\nCrea el guion de voz (máx 150 caracteres), puntuación clara, tono épico.\nResponde como JSON: {"elevenlabs_script":"..."}`;
 
-      const promises = [];
+      const intro = await callMistral(step1, true);
+      const introText = intro.intro || JSON.stringify(intro);
+      
+      const copy = await callMistral(`${step2Prefix}\nIntroducción: ${introText}`, true);
+      const luma = await callMistral(`${step3Prefix}\nTema: ${idea_base}`, true);
+      const voice = await callMistral(`${step4Prefix}\nEscena: ${luma.luma_prompt || JSON.stringify(luma)}`, true);
 
-      if (llms.includes('gemini')) {
-        promises.push(
-          (async () => {
-            const intro1 = await callGemini(step1, true);
-            const copy1 = await callGemini(`${step2Prefix}\nIntroducción anterior: ${JSON.stringify(intro1)}`, true);
-            const luma1 = await callGemini(step3Prefix, true);
-            const voice1 = await callGemini(`${step4Prefix}\nEscena visual: ${typeof luma1 === 'string' ? luma1 : JSON.stringify(luma1)}`, true);
-            results.gemini = {
-              instagram_copy: typeof copy1 === 'string' ? copy1 : (copy1.instagram_copy || JSON.stringify(copy1)),
-              luma_prompt: typeof luma1 === 'string' ? luma1 : (luma1.luma_prompt || JSON.stringify(luma1)),
-              elevenlabs_script: typeof voice1 === 'string' ? voice1 : (voice1.elevenlabs_script || JSON.stringify(voice1))
-            };
-          })()
-        );
-      }
-
-      if (llms.includes('openai')) {
-        promises.push(
-          (async () => {
-            const intro2 = await callOpenAI(step1, true);
-            const copy2 = await callOpenAI(`${step2Prefix}\nIntroducción anterior: ${JSON.stringify(intro2)}`, true);
-            const luma2 = await callOpenAI(step3Prefix, true);
-            const voice2 = await callOpenAI(`${step4Prefix}\nEscena visual: ${typeof luma2 === 'string' ? luma2 : JSON.stringify(luma2)}`, true);
-            results.openai = {
-              instagram_copy: typeof copy2 === 'string' ? copy2 : (copy2.instagram_copy || JSON.stringify(copy2)),
-              luma_prompt: typeof luma2 === 'string' ? luma2 : (luma2.luma_prompt || JSON.stringify(luma2)),
-              elevenlabs_script: typeof voice2 === 'string' ? voice2 : (voice2.elevenlabs_script || JSON.stringify(voice2))
-            };
-          })()
-        );
-      }
-
-      await Promise.all(promises);
+      results.mistral = {
+        instagram_copy: copy.instagram_copy || JSON.stringify(copy),
+        luma_prompt: luma.luma_prompt || JSON.stringify(luma),
+        elevenlabs_script: voice.elevenlabs_script || JSON.stringify(voice)
+      };
     }
 
     return Response.json(results);
