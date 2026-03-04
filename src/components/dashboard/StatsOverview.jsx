@@ -12,18 +12,22 @@ const STATS = [
 export default function StatsOverview({ counts }) {
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-      {STATS.map(({ key, label, icon: Icon, color }) => (
-        <div
+      {STATS.map(({ key, label, icon: Icon, color }, i) => (
+        <motion.div
           key={key}
-          className="relative overflow-hidden bg-[var(--surface-raised)] border border-[var(--border-dim)] rounded-2xl p-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.08, duration: 0.4 }}
+          className="relative overflow-hidden bg-[var(--surface-raised)] border border-[var(--border-dim)] rounded-2xl p-4 hover:scale-[1.03] transition-transform duration-200 cursor-default"
         >
-          <div className={`absolute -top-4 -right-4 w-16 h-16 rounded-full bg-gradient-to-br ${color} opacity-10 blur-xl`} />
-          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center mb-3`}>
-            <Icon className="w-4 h-4 text-white" />
+          <div className={`absolute -top-6 -right-6 w-24 h-24 rounded-full bg-gradient-to-br ${color} opacity-20 blur-2xl`} />
+          <div className={`absolute bottom-0 left-0 h-0.5 w-full bg-gradient-to-r ${color} opacity-60`} />
+          <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center mb-3 shadow-lg`}>
+            <Icon className="w-4.5 h-4.5 text-white" />
           </div>
-          <p className="text-2xl font-bold text-white">{counts[key] ?? 0}</p>
-          <p className="text-xs text-gray-500 mt-0.5">{label}</p>
-        </div>
+          <p className="text-3xl font-black text-white">{counts[key] ?? 0}</p>
+          <p className="text-xs text-gray-400 mt-0.5 font-medium">{label}</p>
+        </motion.div>
       ))}
     </div>
   );
