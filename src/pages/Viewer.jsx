@@ -45,6 +45,24 @@ export default function Viewer() {
 
   const selectedPost = posts.find((p) => p.id === selectedPostId);
 
+  const handleGenerate3D = async () => {
+    if (!selectedPost?.luma_prompt) return;
+    setLoading(true);
+    toast.info("Generando modelo 3D con Tripo3D... puede tardar ~90s");
+    const res = await base44.functions.invoke("tripo3DGenerate", {
+      prompt: selectedPost.luma_prompt,
+      post_id: selectedPostId,
+    });
+    if (res.data?.model_url) {
+      setMediaUrl(res.data.model_url);
+      setMediaType("3d");
+      toast.success("Modelo 3D generado");
+    } else if (res.data?.error) {
+      toast.error(res.data.error);
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <SectionHeader

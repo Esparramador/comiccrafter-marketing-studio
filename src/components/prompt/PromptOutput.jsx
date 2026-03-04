@@ -7,6 +7,22 @@ import { toast } from "sonner";
 export default function PromptOutput({ label, icon: Icon, content, tipo, postId, accentColor = "violet" }) {
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [generatingAudio, setGeneratingAudio] = useState(false);
+  const [audioUrl, setAudioUrl] = useState(null);
+
+  const handleGenerateAudio = async () => {
+    if (!content) return;
+    setGeneratingAudio(true);
+    setAudioUrl(null);
+    const res = await base44.functions.invoke("elevenLabsGenerate", { text: content });
+    if (res.data?.audio_url) {
+      setAudioUrl(res.data.audio_url);
+      toast.success("Audio generado");
+    } else {
+      toast.error(res.data?.error || "Error generando audio");
+    }
+    setGeneratingAudio(false);
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content || "");
@@ -63,6 +79,18 @@ export default function PromptOutput({ label, icon: Icon, content, tipo, postId,
             {saving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Archive className="w-3 h-3 mr-1" />}
             Bóveda
           </Button>
+          {tipo === "elevenlabs" && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleGenerateAudio}
+              disabled={!content || generatingAudio}
+              className="h-7 text-xs text-violet-400 hover:text-violet-300"
+            >
+              {generatingAudio ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <Volume2 className="w-3 h-3 mr-1" />}
+              {generatingAudio ? "Generando..." : "🎙️ Audio"}
+            </Button>
+          )}
         </div>
       </div>
       <div className="min-h-[120px] p-3 rounded-xl bg-black/20 border border-white/5">
@@ -72,6 +100,9 @@ export default function PromptOutput({ label, icon: Icon, content, tipo, postId,
           <p className="text-sm text-gray-600 italic">Genera contenido para ver el resultado aquí...</p>
         )}
       </div>
+      {audioUrl && (
+        <audio controls src={audioUrl} className="w-full mt-2 rounded-lg" />
+      )}
     </div>
   );
 }
