@@ -126,6 +126,24 @@ function LayoutInner({ children, currentPageName }) {
             <Globe className="w-3.5 h-3.5 text-emerald-400" />
             comiccrafter.es ↗
           </a>
+          <a
+            href="https://comic-crafter.myshopify.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
+          >
+            <span className="text-[#96BF48] text-xs font-bold leading-none">S</span>
+            Shopify Store ↗
+          </a>
+          <a
+            href="https://www.instagram.com/comiccrafter.es"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-gray-400 hover:text-gray-200 hover:bg-white/5 transition-all"
+          >
+            <span className="text-[10px] font-bold bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">IG</span>
+            @comiccrafter.es ↗
+          </a>
           <LanguageSwitcher />
           <div className="px-3 py-2 rounded-xl bg-gradient-to-r from-violet-600/10 to-fuchsia-600/10 border border-violet-500/20">
             <p className="text-[11px] text-violet-300 font-medium">ComicCrafter AI</p>
