@@ -209,6 +209,7 @@ Deno.serve(async (req) => {
       content_type: contentType,
       duration: duration || null,
       max_images: maxImages || null,
+      reference_image: reference_image_url || null,
     });
 
     return Response.json({
@@ -217,10 +218,11 @@ Deno.serve(async (req) => {
       hashtags,
       imageUrl,
       topic,
-      template,
+      template: templateKey,
       contentType,
       duration,
       maxImages,
+      reference_image_url,
     });
   } catch (error) {
     console.error(error);
