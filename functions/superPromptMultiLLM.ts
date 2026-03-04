@@ -82,6 +82,11 @@ FORMATO DE SALIDA:
           parts.push({ inline_data: { mime_type: mimeType, data: base64 } });
         } catch (_) {}
       }
+      // Añadir contexto web si es necesario
+      if (includeWeb && webContext) {
+        parts.unshift({ text: `CONTEXTO WEB VERIFICADO:\n${webContext}\n\n---\n` });
+      }
+
       const geminiRes = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${Deno.env.get('GEMINI_API_KEY')}`,
         {
