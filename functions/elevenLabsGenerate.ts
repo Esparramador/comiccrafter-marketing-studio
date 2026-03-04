@@ -9,7 +9,7 @@ Deno.serve(async (req) => {
     const { text } = await req.json();
     if (!text) return Response.json({ error: 'text requerido' }, { status: 400 });
 
-    // Usar Replicate para síntesis de voz (modelo gratuito)
+    // Usar Replicate para síntesis de voz con Coqui TTS
     const ttsRes = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -17,36 +17,38 @@ Deno.serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        version: 'c40fd2c3cb321b59e1c6b86d47523259b23528399470bbc0669cc6ef6c95b662',
+        version: 'df457ce4b3aac72b32b92b2e50d0cc6e4abade2833237a1f6b11b8328e37c76f',
         input: {
           text: text,
-          language: 'es' // español por defecto
+          speaker: 'Aylin'
         }
       })
     });
 
     if (!ttsRes.ok) {
       const err = await ttsRes.json().catch(() => ({}));
-      return Response.json({ error: 'TTS generation error' }, { status: 502 });
+      return Response.json({ error: 'TTS API error' }, { status: 502 });
     }
 
     const ttsData = await ttsRes.json();
     let prediction = ttsData;
     
-    // Poll hasta que termine
-    while (prediction.status !== 'succeeded' && prediction.status !== 'failed') {
+    // Poll hasta que termine (max 60s)
+    let attempts = 0;
+    while (prediction.status !== 'succeeded' && prediction.status !== 'failed' && attempts < 60) {
       await new Promise(r => setTimeout(r, 1000));
       const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
         headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
       });
       prediction = await checkRes.json();
+      attempts++;
     }
 
     if (prediction.status !== 'succeeded' || !prediction.output) {
-      return Response.json({ error: 'TTS generation failed' }, { status: 502 });
+      return Response.json({ error: 'Audio generation timeout or failed' }, { status: 202 });
     }
 
-    const audioUrl = prediction.output; // URL del audio generado
+    const audioUrl = prediction.output; // URL del audio generado en Replicate
 
     return Response.json({ audio_url: audioUrl });
   } catch (error) {
