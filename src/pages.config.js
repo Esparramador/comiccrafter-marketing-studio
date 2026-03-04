@@ -58,6 +58,7 @@ import Settings from './pages/Settings';
 import SuperPrompt from './pages/SuperPrompt';
 import Vault from './pages/Vault';
 import Viewer from './pages/Viewer';
+import TextEnhancer from './pages/TextEnhancer';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +74,7 @@ export const PAGES = {
     "SuperPrompt": SuperPrompt,
     "Vault": Vault,
     "Viewer": Viewer,
+    "TextEnhancer": TextEnhancer,
 }
 
 export const pagesConfig = {
