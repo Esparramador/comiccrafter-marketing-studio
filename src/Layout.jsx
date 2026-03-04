@@ -134,3 +134,5 @@ function LayoutInner({ children, currentPageName }) {
     </div>
   );
 }
+
+export default Layout;
