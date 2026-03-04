@@ -138,10 +138,9 @@ export default function SuperPrompt() {
 
     // Disparar webhook Make.com
     base44.functions.invoke("makeWebhook", {
-      event: "content_generated",
-      post_id: selectedPostId || null,
       idea_base: ideaBase,
-      tone,
+      tono_idioma: tone,
+      datos_github: "",
       instagram_copy: data.instagram_copy || "",
       luma_prompt: data.luma_prompt || "",
       elevenlabs_script: data.elevenlabs_script || "",
