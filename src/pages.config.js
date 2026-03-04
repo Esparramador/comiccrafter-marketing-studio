@@ -55,6 +55,7 @@ import LabAI from './pages/LabAI';
 import SuperPrompt from './pages/SuperPrompt';
 import Vault from './pages/Vault';
 import Viewer from './pages/Viewer';
+import MarketingStudio from './pages/MarketingStudio';
 import __Layout from './Layout.jsx';
 
 
@@ -67,6 +68,7 @@ export const PAGES = {
     "SuperPrompt": SuperPrompt,
     "Vault": Vault,
     "Viewer": Viewer,
+    "MarketingStudio": MarketingStudio,
 }
 
 export const pagesConfig = {
