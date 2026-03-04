@@ -182,8 +182,8 @@ FORMATO: {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`
       const finalPrompt = `${promptsmithSystem}\n\nIDEA_DEL_USUARIO: ${idea_base}`;
 
       const promises = [];
-      if (llms.includes('gemini')) promises.push(callGemini(finalPrompt).then(r => { results.gemini = r; }));
-      if (llms.includes('openai')) promises.push(callOpenAI(finalPrompt).then(r => { results.openai = r; }));
+      if (llms.includes('gemini')) promises.push(callGemini(finalPrompt, true).then(r => { results.gemini = r; }));
+      if (llms.includes('openai')) promises.push(callOpenAI(finalPrompt, true).then(r => { results.openai = r; }));
 
       await Promise.all(promises);
     } else if (mode === 'sequential') {
