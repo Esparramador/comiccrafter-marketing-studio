@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Copy, CheckCircle2, Archive, Loader2 } from "lucide-react";
+import { Copy, CheckCircle2, Archive, Loader2, Volume2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function PromptOutput({ label, icon: Icon, content, tipo, postId, accentColor = "violet" }) {

@@ -111,29 +111,17 @@ export default function SuperPrompt() {
     setGenerating(true);
     setOutputs({ instagram_copy: "", luma_prompt: "", elevenlabs_script: "" });
 
-    const userPrompt = `IDEA_DEL_USUARIO: ${ideaBase}${imageUrl ? `\n(Imagen de referencia adjunta)` : ""}`;
-
-    const invokeParams = {
-      prompt: buildSystemPrompt(tone) + "\n\n" + userPrompt,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          instagram_copy: { type: "string" },
-          luma_prompt: { type: "string" },
-          elevenlabs_script: { type: "string" },
-        },
-      },
-    };
-
-    if (imageUrl) {
-      invokeParams.file_urls = [imageUrl];
-    }
-
-    const res = await base44.integrations.Core.InvokeLLM(invokeParams);
+    const toneOpt = TONE_OPTIONS.find((o) => o.value === tone);
+    const res = await base44.functions.invoke("superPromptGemini", {
+      idea_base: ideaBase,
+      tone_label: toneOpt?.label || "Español (Tono Épico / Friki)",
+      image_url: imageUrl || null,
+    });
+    const data = res.data || {};
     setOutputs({
-      instagram_copy: res.instagram_copy || "",
-      luma_prompt: res.luma_prompt || "",
-      elevenlabs_script: res.elevenlabs_script || "",
+      instagram_copy: data.instagram_copy || "",
+      luma_prompt: data.luma_prompt || "",
+      elevenlabs_script: data.elevenlabs_script || "",
     });
 
     // Auto save to post if selected
