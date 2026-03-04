@@ -42,8 +42,10 @@ export default function SuperPrompt() {
   const [selectedPostId, setSelectedPostId] = useState(postIdParam || "");
   const [ideaBase, setIdeaBase] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [tone, setTone] = useState("epic_es");
   const [generating, setGenerating] = useState(false);
   const [outputs, setOutputs] = useState({ instagram_copy: "", luma_prompt: "", elevenlabs_script: "" });
+  const { t } = useI18n();
 
   const queryClient = useQueryClient();
 
