@@ -92,7 +92,7 @@ export default function Dashboard() {
         <div className="text-center space-y-4">
           <h2 className="text-2xl font-bold text-white">Inicia sesión para continuar</h2>
           <button
-            onClick={() => base44.auth.redirectToLogin()}
+            onClick={() => base44.auth.redirectToLogin("/")}
             className="px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-medium transition-colors"
           >
             Iniciar Sesión
