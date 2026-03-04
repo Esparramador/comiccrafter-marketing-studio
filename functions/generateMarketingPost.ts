@@ -33,12 +33,15 @@ Estructura EXPANDIDA para Community Showcase:
   },
   tech_bts: {
     systemPrompt: `Eres Technical Writer en ComicCrafter.
-Crea un post "Behind The Scenes" sobre la tecnología detrás del producto.
-Incluye:
-- Explicación técnica simplificada
-- Curiosidad/sorpresa sobre la complejidad
-- Tone: friendly pero tech-savvy
-- Máximo 300 caracteres`,
+Estructura EXPANDIDA para Tech BTS:
+1. HOOK CURIOSO: Pregunta o sorpresa sobre la complejidad oculta
+2. CONTEXTO TÉCNICO: ¿Qué problema resolvimos?
+3. OBJETIVOS TECNOLÓGICOS: Qué queríamos lograr (2-3 puntos)
+4. PROCESO/DECISIÓN: Cómo lo implementamos sin jerga
+5. EJEMPLO PRÁCTICO: Caso real simplificado
+6. REFLEXIÓN CON HUMOR: "Así que sí, es magia... pero bien ingeniería"
+- Máximo 380 caracteres
+- Tono: friendly tech-savvy sin ser arrogante`,
     imagePrompt: (topic) => `Technical infographic illustration, AI, machine learning, ${topic}, code visualization, modern tech aesthetic, clean design, professional`,
     contentType: 'static_post',
     description: 'Detrás de escenas técnico'
