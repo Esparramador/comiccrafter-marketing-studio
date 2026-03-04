@@ -24,8 +24,9 @@ const NAV_KEYS = [
   { key: "nav_vault", page: "Vault", icon: Archive },
 ];
 
-export default function Layout({ children, currentPageName }) {
+function LayoutInner({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { t } = useI18n();
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white flex">
@@ -72,7 +73,7 @@ export default function Layout({ children, currentPageName }) {
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto scrollbar-thin">
-          {NAV_ITEMS.map((item) => {
+          {NAV_KEYS.map((item) => {
             const isActive = currentPageName === item.page;
             return (
               <Link
@@ -87,7 +88,7 @@ export default function Layout({ children, currentPageName }) {
                 )}
               >
                 <item.icon className={cn("w-4.5 h-4.5", isActive && "text-violet-400")} />
-                {item.name}
+                {t(item.key)}
               </Link>
             );
           })}
