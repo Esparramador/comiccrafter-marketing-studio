@@ -13,13 +13,15 @@ import {
   Archive,
   Menu,
   Zap,
-  Shield
+  Shield,
+  GalleryHorizontalEnd
 } from "lucide-react";
 
 const NAV_KEYS = [
   { key: "nav_dashboard", page: "Dashboard", icon: LayoutDashboard },
   { key: "nav_lab", page: "LabAI", icon: FlaskConical },
   { key: "nav_superprompt", page: "SuperPrompt", icon: Sparkles },
+  { key: "nav_gallery", page: "Gallery", icon: GalleryHorizontalEnd },
   { key: "nav_viewer", page: "Viewer", icon: Eye },
   { key: "nav_kanban", page: "Kanban", icon: Calendar },
   { key: "nav_vault", page: "Vault", icon: Archive },
