@@ -24,10 +24,10 @@ export default function Dashboard() {
   React.useEffect(() => {
     base44.auth.isAuthenticated()
       .then((authed) => {
-        if (!authed) base44.auth.redirectToLogin("/dashboard");
+        if (!authed) base44.auth.redirectToLogin();
         setIsAuthed(authed);
       })
-      .catch(() => base44.auth.redirectToLogin("/dashboard"));
+      .catch(() => base44.auth.redirectToLogin());
   }, []);
 
   const [bgIndex, setBgIndex] = React.useState(0);
