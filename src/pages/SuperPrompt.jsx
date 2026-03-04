@@ -266,21 +266,32 @@ export default function SuperPrompt() {
         {/* LLM selector */}
         <div className="space-y-3">
           <label className="text-xs text-gray-500 font-medium">Modelos IA</label>
-          <div className="flex gap-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={selectedLLMs.includes("gemini")} onChange={(e) => {
-                if (e.target.checked) setSelectedLLMs([...selectedLLMs, "gemini"]);
-                else setSelectedLLMs(selectedLLMs.filter(l => l !== "gemini"));
-              }} className="w-4 h-4" />
-              <span className="text-sm text-gray-400">Gemini</span>
-            </label>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={selectedLLMs.includes("openai")} onChange={(e) => {
-                if (e.target.checked) setSelectedLLMs([...selectedLLMs, "openai"]);
-                else setSelectedLLMs(selectedLLMs.filter(l => l !== "openai"));
-              }} className="w-4 h-4" />
-              <span className="text-sm text-gray-400">ChatGPT</span>
-            </label>
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={selectedLLMs.includes("gemini")} onChange={(e) => {
+                  if (e.target.checked) setSelectedLLMs([...selectedLLMs, "gemini"]);
+                  else setSelectedLLMs(selectedLLMs.filter(l => l !== "gemini"));
+                  if (!e.target.checked) setComboMode(false);
+                }} className="w-4 h-4" />
+                <span className="text-sm text-gray-400">Gemini</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={selectedLLMs.includes("openai")} onChange={(e) => {
+                  if (e.target.checked) setSelectedLLMs([...selectedLLMs, "openai"]);
+                  else setSelectedLLMs(selectedLLMs.filter(l => l !== "openai"));
+                  if (!e.target.checked) setComboMode(false);
+                }} className="w-4 h-4" />
+                <span className="text-sm text-gray-400">ChatGPT</span>
+              </label>
+            </div>
+
+            {selectedLLMs.includes("gemini") && selectedLLMs.includes("openai") && (
+              <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg bg-violet-600/10 border border-violet-600/30">
+                <input type="checkbox" checked={comboMode} onChange={(e) => setComboMode(e.target.checked)} className="w-4 h-4" />
+                <span className="text-sm text-violet-300">🚀 Modo Complementario (Gemini→ChatGPT→Fusión)</span>
+              </label>
+            )}
           </div>
         </div>
 
