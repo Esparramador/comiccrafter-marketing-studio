@@ -6,40 +6,49 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { text, voice_id } = await req.json();
+    const { text } = await req.json();
     if (!text) return Response.json({ error: 'text requerido' }, { status: 400 });
 
-    const selectedVoice = voice_id || 'pNInz6obpgDQGcFmaJgB'; // Adam - voz masculina por defecto
-
-    const ttsRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice}`, {
+    // Usar Replicate para síntesis de voz (modelo gratuito)
+    const ttsRes = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
-        'xi-api-key': Deno.env.get('ELEVENLABS_API_KEY'),
+        'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        text,
-        model_id: 'eleven_multilingual_v2',
-        voice_settings: { stability: 0.5, similarity_boost: 0.75 }
+        version: 'c40fd2c3cb321b59e1c6b86d47523259b23528399470bbc0669cc6ef6c95b662',
+        input: {
+          text: text,
+          language: 'es' // español por defecto
+        }
       })
     });
 
     if (!ttsRes.ok) {
       const err = await ttsRes.json().catch(() => ({}));
-      return Response.json({ error: err.detail?.message || 'ElevenLabs error' }, { status: 502 });
+      return Response.json({ error: 'TTS generation error' }, { status: 502 });
     }
 
-    // Upload audio to Base44 storage and return URL
-    const audioBuffer = await ttsRes.arrayBuffer();
-    const audioBlob = new Blob([audioBuffer], { type: 'audio/mpeg' });
+    const ttsData = await ttsRes.json();
+    let prediction = ttsData;
+    
+    // Poll hasta que termine
+    while (prediction.status !== 'succeeded' && prediction.status !== 'failed') {
+      await new Promise(r => setTimeout(r, 1000));
+      const checkRes = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
+        headers: { 'Authorization': `Token ${Deno.env.get('REPLICATE_API_KEY')}` },
+      });
+      prediction = await checkRes.json();
+    }
 
-    // Upload via Base44 integration
-    const formData = new FormData();
-    formData.append('file', audioBlob, 'voice_script.mp3');
+    if (prediction.status !== 'succeeded' || !prediction.output) {
+      return Response.json({ error: 'TTS generation failed' }, { status: 502 });
+    }
 
-    const uploadRes = await base44.asServiceRole.integrations.Core.UploadFile({ file: audioBlob });
+    const audioUrl = prediction.output; // URL del audio generado
 
-    return Response.json({ audio_url: uploadRes.file_url });
+    return Response.json({ audio_url: audioUrl });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
