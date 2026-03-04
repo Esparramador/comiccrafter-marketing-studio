@@ -201,10 +201,10 @@ FORMATO: {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`
       if (llms.includes('gemini')) {
         promises.push(
           (async () => {
-            const intro1 = await callGemini(step1);
-            const copy1 = await callGemini(`${step2Prefix}\nIntroducción anterior: ${JSON.stringify(intro1)}`);
-            const luma1 = await callGemini(step3Prefix);
-            const voice1 = await callGemini(`${step4Prefix}\nEscena visual: ${typeof luma1 === 'string' ? luma1 : JSON.stringify(luma1)}`);
+            const intro1 = await callGemini(step1, true);
+            const copy1 = await callGemini(`${step2Prefix}\nIntroducción anterior: ${JSON.stringify(intro1)}`, true);
+            const luma1 = await callGemini(step3Prefix, true);
+            const voice1 = await callGemini(`${step4Prefix}\nEscena visual: ${typeof luma1 === 'string' ? luma1 : JSON.stringify(luma1)}`, true);
             results.gemini = {
               instagram_copy: typeof copy1 === 'string' ? copy1 : (copy1.instagram_copy || JSON.stringify(copy1)),
               luma_prompt: typeof luma1 === 'string' ? luma1 : (luma1.luma_prompt || JSON.stringify(luma1)),
@@ -217,10 +217,10 @@ FORMATO: {"instagram_copy":"...","luma_prompt":"...","elevenlabs_script":"..."}`
       if (llms.includes('openai')) {
         promises.push(
           (async () => {
-            const intro2 = await callOpenAI(step1);
-            const copy2 = await callOpenAI(`${step2Prefix}\nIntroducción anterior: ${JSON.stringify(intro2)}`);
-            const luma2 = await callOpenAI(step3Prefix);
-            const voice2 = await callOpenAI(`${step4Prefix}\nEscena visual: ${typeof luma2 === 'string' ? luma2 : JSON.stringify(luma2)}`);
+            const intro2 = await callOpenAI(step1, true);
+            const copy2 = await callOpenAI(`${step2Prefix}\nIntroducción anterior: ${JSON.stringify(intro2)}`, true);
+            const luma2 = await callOpenAI(step3Prefix, true);
+            const voice2 = await callOpenAI(`${step4Prefix}\nEscena visual: ${typeof luma2 === 'string' ? luma2 : JSON.stringify(luma2)}`, true);
             results.openai = {
               instagram_copy: typeof copy2 === 'string' ? copy2 : (copy2.instagram_copy || JSON.stringify(copy2)),
               luma_prompt: typeof luma2 === 'string' ? luma2 : (luma2.luma_prompt || JSON.stringify(luma2)),
