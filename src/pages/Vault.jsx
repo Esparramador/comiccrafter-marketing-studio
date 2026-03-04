@@ -8,15 +8,18 @@ import VaultFilters from "@/components/vault/VaultFilters";
 import VaultCard from "@/components/vault/VaultCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useAuthGuard } from "@/components/auth/useAuthGuard";
 
 export default function Vault() {
   const [filter, setFilter] = useState("all");
   const [showFavOnly, setShowFavOnly] = useState(false);
   const queryClient = useQueryClient();
+  const { user } = useAuthGuard();
 
   const { data: prompts = [], isLoading } = useQuery({
-    queryKey: ["vault-prompts"],
-    queryFn: () => base44.entities.PromptsVault.list("-created_date", 100),
+    queryKey: ["vault-prompts", user?.email],
+    enabled: !!user?.email,
+    queryFn: () => base44.entities.PromptsVault.filter({ created_by: user.email }, "-created_date", 100),
   });
 
   const refresh = () => queryClient.invalidateQueries({ queryKey: ["vault-prompts"] });
