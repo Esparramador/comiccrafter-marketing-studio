@@ -68,10 +68,12 @@ Incluye:
 - Secuencia: personajes → prompt → resultado
 - Música épica/cinemática recomendada
 - Transiciones dinámicas
-- CTA: "Descubre cómo en comiccrafter.es"`,
-    imagePrompt: (topic) => `Screen recording aesthetic, creative process visualization, ${topic}, dynamic transitions, colorful UI, modern motion graphics, trending reel style`,
+- CTA: "Descubre cómo en comiccrafter.es"
+IMPORTANTE: Este reel necesita 3-5 frames/escenas diferenciadas con descripciones visuales claras.`,
+    imagePrompt: (topic) => `${topic}, Dynamic creative process, AI interface, comic panel generation, before-after transformation, screen recordings UI elements, motion graphics style, 4K, trending`,
     contentType: 'reel',
     duration: '15-20s',
+    maxImages: 4,
     description: 'Reel viral mostrando proceso creativo'
   },
   story_interactive: {
