@@ -201,7 +201,7 @@ Deno.serve(async (req) => {
     }
 
     // Generate post content
-    const { copy, hashtags, imagePrompt } = await generatePost(topic, template);
+    const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, template);
 
     // Generate image with base44 integration
     const imageRes = await base44.integrations.Core.GenerateImage({
@@ -217,6 +217,9 @@ Deno.serve(async (req) => {
       image_url: imageRes.url,
       image_prompt: imagePrompt,
       status: 'draft',
+      content_type: contentType,
+      duration: duration || null,
+      max_images: maxImages || null,
     });
 
     return Response.json({
@@ -226,6 +229,9 @@ Deno.serve(async (req) => {
       imageUrl: imageRes.url,
       topic,
       template,
+      contentType,
+      duration,
+      maxImages,
     });
   } catch (error) {
     console.error(error);
