@@ -24,7 +24,7 @@ const NAV_KEYS = [
   { key: "nav_vault", page: "Vault", icon: Archive },
 ];
 
-export default function Layout({ children, currentPageName }) {
+function Layout({ children, currentPageName }) {
   return (
     <I18nProvider>
       <LayoutInner currentPageName={currentPageName}>{children}</LayoutInner>
