@@ -118,28 +118,39 @@ export default function SuperPrompt() {
       toast.error("Escribe una idea base primero");
       return;
     }
+    if (selectedLLMs.length === 0) {
+      toast.error("Selecciona al menos un modelo");
+      return;
+    }
     setGenerating(true);
     setOutputs({ instagram_copy: "", luma_prompt: "", elevenlabs_script: "" });
 
     const toneOpt = TONE_OPTIONS.find((o) => o.value === tone);
-    const res = await base44.functions.invoke("superPromptGemini", {
+    const res = await base44.functions.invoke("superPromptMultiLLM", {
       idea_base: ideaBase,
       tone_label: toneOpt?.label || "Español (Tono Épico / Friki)",
       image_url: imageUrl || null,
+      mode: mode,
+      llms: selectedLLMs,
     });
     const data = res.data || {};
+
+    // Si hay múltiples LLMs, usa el primero disponible para guardar
+    const primaryLLM = selectedLLMs[0];
+    const primaryData = data[primaryLLM] || data.gemini || data.openai || {};
+
     setOutputs({
-      instagram_copy: data.instagram_copy || "",
-      luma_prompt: data.luma_prompt || "",
-      elevenlabs_script: data.elevenlabs_script || "",
+      instagram_copy: primaryData.instagram_copy || "",
+      luma_prompt: primaryData.luma_prompt || "",
+      elevenlabs_script: primaryData.elevenlabs_script || "",
     });
 
     // Auto save to post if selected
     if (selectedPostId) {
       await base44.entities.Post.update(selectedPostId, {
-        instagram_copy: data.instagram_copy || "",
-        luma_prompt: data.luma_prompt || "",
-        elevenlabs_script: data.elevenlabs_script || "",
+        instagram_copy: primaryData.instagram_copy || "",
+        luma_prompt: primaryData.luma_prompt || "",
+        elevenlabs_script: primaryData.elevenlabs_script || "",
         status: "en_produccion",
       });
       queryClient.invalidateQueries({ queryKey: ["posts-all"] });
@@ -151,9 +162,9 @@ export default function SuperPrompt() {
       idea_base: ideaBase,
       tono_idioma: tone,
       datos_github: "",
-      instagram_copy: data.instagram_copy || "",
-      luma_prompt: data.luma_prompt || "",
-      elevenlabs_script: data.elevenlabs_script || "",
+      instagram_copy: primaryData.instagram_copy || "",
+      luma_prompt: primaryData.luma_prompt || "",
+      elevenlabs_script: primaryData.elevenlabs_script || "",
     });
 
     setGenerating(false);
