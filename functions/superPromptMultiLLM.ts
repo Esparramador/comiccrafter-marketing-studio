@@ -9,6 +9,14 @@ Deno.serve(async (req) => {
     const { idea_base, tone_label, image_url, mode = 'megaprompt', llms = ['gemini'], combo = false } = await req.json();
     if (!idea_base) return Response.json({ error: 'idea_base requerida' }, { status: 400 });
 
+    // Enriquecer idea con búsqueda en internet
+    const webContextPrompt = `Busca información reciente y verificada sobre: "${idea_base}". Extrae datos clave, tendencias, referencias populares, y cualquier contexto útil que enriquezca este tema.`;
+    const webContextRes = await base44.integrations.Core.InvokeLLM({
+      prompt: webContextPrompt,
+      add_context_from_internet: true
+    });
+    const webContext = typeof webContextRes === 'string' ? webContextRes : (webContextRes.text || JSON.stringify(webContextRes));
+
     const promptsmithSystem = `Eres PROMPTSMITH, un experto mundial en ingeniería de prompts con dominio absoluto de las técnicas más avanzadas para comunicarse con modelos de lenguaje. Tu misión es transformar la idea del usuario en contenido extraordinario, preciso y altamente efectivo para ComicCrafter.es.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
