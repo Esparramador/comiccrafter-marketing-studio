@@ -86,6 +86,17 @@ export default function Viewer() {
             </SelectContent>
           </Select>
           {selectedPost && <StatusBadge status={selectedPost.status} />}
+          {selectedPost?.luma_prompt && (
+            <Button
+              onClick={handleGenerate3D}
+              disabled={loading}
+              size="sm"
+              className="ml-auto bg-gradient-to-r from-cyan-600 to-violet-600 hover:opacity-90 text-white text-xs"
+            >
+              {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Wand2 className="w-3.5 h-3.5 mr-1.5" />}
+              Generar 3D con Tripo
+            </Button>
+          )}
         </div>
 
         {/* Media Viewer */}
