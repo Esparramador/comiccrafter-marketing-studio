@@ -174,20 +174,37 @@ Deno.serve(async (req) => {
     // Generate post content
     const { copy, hashtags, imagePrompt, contentType, duration, maxImages } = await generatePost(topic, templateKey);
 
-    // Generar imagen con Base44 GenerateImage (más confiable)
+    // Generar imagen con Manus
     let imageUrl = null;
+    let modelUrl = null;
     
     try {
-      const imgRes = await base44.integrations.Core.GenerateImage({
-        prompt: imagePrompt
+      const manusRes = await fetch('https://api.manus.ai/generate', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${Deno.env.get('MANUS_API_KEY')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: imagePrompt,
+          type: 'image',
+          quality: 'high',
+        }),
       });
-      imageUrl = imgRes.url;
-      console.log('[Image Generated]', imageUrl);
+
+      if (manusRes.ok) {
+        const manusData = await manusRes.json();
+        imageUrl = manusData.image_url;
+        modelUrl = manusData.model_url; // Si genera modelo 3D también
+        console.log('[Manus Image Generated]', imageUrl);
+      } else {
+        console.error('[Manus Error]', await manusRes.text());
+      }
     } catch (error) {
-      console.error('[Image Generation Failed]', error.message);
+      console.error('[Manus Generation Failed]', error.message);
     }
     
-    // Fallback a Unsplash si falla todo
+    // Fallback a Unsplash si falla
     if (!imageUrl) {
       imageUrl = 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1024&h=1024&fit=crop';
     }
