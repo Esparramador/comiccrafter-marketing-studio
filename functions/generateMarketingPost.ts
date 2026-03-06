@@ -248,7 +248,7 @@ Deno.serve(async (req) => {
     }
 
     // Save to database
-    const post = await base44.entities.MarketingPost.create({
+    const marketingPost = await base44.entities.MarketingPost.create({
       topic,
       template: templateKey,
       instagram_copy: copy,
@@ -260,6 +260,17 @@ Deno.serve(async (req) => {
       duration: duration || null,
       max_images: maxImages || null,
       reference_image: reference_image_url || null,
+    });
+
+    // También guardar en Post entity para que aparezca en Viewer
+    const post = await base44.entities.Post.create({
+      idea_base: topic,
+      instagram_copy: copy,
+      luma_prompt: imagePrompt,
+      media_url: imageUrl,
+      media_type: 'image',
+      status: 'idea',
+      platform: 'instagram'
     });
 
     return Response.json({
