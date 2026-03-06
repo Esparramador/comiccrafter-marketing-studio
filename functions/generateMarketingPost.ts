@@ -106,6 +106,17 @@ Incluye:
   },
 };
 
+function generateHook(topic) {
+  const hooks = [
+    `🚨 ${topic.split(' ')[0].toUpperCase()} - Lo que NO esperabas...`,
+    `⚡ ATENCIÓN: ${topic}`,
+    `🎯 ${topic} en 3... 2... 1...`,
+    `🔥 Esto cambió TODO: ${topic}`,
+    `✨ EL SECRETO de ${topic} revelado`
+  ];
+  return hooks[Math.floor(Math.random() * hooks.length)];
+}
+
 async function generatePost(topic, templateKey) {
   const template = TEMPLATES[templateKey];
   if (!template) throw new Error(`Template ${templateKey} no existe`);
@@ -119,12 +130,15 @@ CONTEXTO ESTRATÉGICO INSTAGRAM:
 - Engagement: Haz que sea visual, emocional, shareable
 - Puente a comiccrafter.es: CTA natural sin ser forzado`;
 
+  const hook = generateHook(topic);
+  
   // Generate content with simulated LLM
-  const copy = `✨ ${topic}\n\n🎨 Descubre cómo ${topic} puede transformar tu creatividad. Con ComicCrafter, los límites solo existen en tu imaginación.\n\n🚀 ¡Empieza tu aventura hoy! comiccrafter.es`;
+  const copy = `${hook}\n\n🎨 Descubre cómo ${topic} puede transformar tu creatividad. Con ComicCrafter, los límites solo existen en tu imaginación.\n\n🚀 ¡Empieza tu aventura hoy! comiccrafter.es`;
 
   const hashtags = `#ComicIA #ComicCrafter #ProcesoCreativo #IA #ComicArts #DigitalCreative #CreatividadIA #AnimeArt #HistoriasEpicas`;
 
-  const imagePrompt = template.imagePrompt(topic);
+  const verticalFormat = template.contentType === 'reel' ? ', formato vertical 9:16 (Instagram Reels), con pan & zoom dinámico que sigue la acción, transiciones suaves entre escenas' : '';
+  const imagePrompt = template.imagePrompt(topic) + verticalFormat;
 
   return {
     copy,
