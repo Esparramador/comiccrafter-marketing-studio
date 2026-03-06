@@ -296,6 +296,7 @@ Deno.serve(async (req) => {
       copy,
       hashtags,
       imageUrl,
+      modelUrl,
       mediaUrls,
       topic,
       template: templateKey,
