@@ -284,8 +284,8 @@ Deno.serve(async (req) => {
       idea_base: topic,
       instagram_copy: copy,
       luma_prompt: imagePrompt,
-      media_url: imageUrl,
-      media_type: 'image',
+      media_url: imageUrl || modelUrl,
+      media_type: modelUrl ? '3d' : 'image',
       status: 'idea',
       platform: 'instagram'
     });
