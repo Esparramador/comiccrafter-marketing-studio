@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.20';
 const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
 
 async function callGemini(systemPrompt, userMessage) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_API_KEY}`;
   
   const res = await fetch(url, {
     method: 'POST',
