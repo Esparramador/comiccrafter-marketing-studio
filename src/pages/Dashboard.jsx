@@ -88,15 +88,59 @@ export default function Dashboard() {
   
   if (!isAuthed) {
     return (
-      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4">
-        <div className="text-center space-y-4">
-          <h2 className="text-2xl font-bold text-white">Inicia sesión para continuar</h2>
-          <button
-            onClick={() => base44.auth.redirectToLogin("/")}
-            className="px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-medium transition-colors"
-          >
-            Iniciar Sesión
-          </button>
+      <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4 relative overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-20"
+            style={{ backgroundImage: `url(${BG_IMAGES[bgIndex]})`, transition: "opacity 800ms" }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-900/40 via-[#0a0a0f] to-fuchsia-900/30" />
+        </div>
+
+        {/* Glowing orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-fuchsia-600/15 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Card */}
+        <div className="relative z-10 w-full max-w-md">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 shadow-2xl shadow-violet-900/30 text-center space-y-8">
+            {/* Logo */}
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-violet-500/40">
+                <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-3xl font-black text-white tracking-tight">ComicCrafter</h1>
+                <p className="text-xs text-violet-400 uppercase tracking-widest font-semibold mt-1">Marketing Studio</p>
+              </div>
+            </div>
+
+            {/* Text */}
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold text-white">Bienvenido de vuelta</h2>
+              <p className="text-sm text-gray-400">Tu fábrica de contenido con IA te espera</p>
+            </div>
+
+            {/* Features pills */}
+            <div className="flex flex-wrap justify-center gap-2">
+              {["✨ Posts con IA", "🎨 Generación de imágenes", "🚀 Auto-publicación"].map(f => (
+                <span key={f} className="px-3 py-1 text-xs bg-violet-600/20 border border-violet-500/20 text-violet-300 rounded-full">{f}</span>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <button
+              onClick={() => base44.auth.redirectToLogin("/")}
+              className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white rounded-xl font-semibold text-sm transition-all duration-200 shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:scale-[1.02]"
+            >
+              Iniciar Sesión →
+            </button>
+
+            <p className="text-xs text-gray-600">comiccrafter.es · Marketing con IA</p>
+          </div>
         </div>
       </div>
     );
