@@ -275,6 +275,7 @@ Deno.serve(async (req) => {
 
     return Response.json({
       id: post.id,
+      marketingPostId: marketingPost.id,
       copy,
       hashtags,
       imageUrl,
